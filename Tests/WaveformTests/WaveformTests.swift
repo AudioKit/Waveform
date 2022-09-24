@@ -7,6 +7,8 @@ import MetalKit
 final class WaveformTests: XCTestCase {
     let device = MTLCreateSystemDefaultDevice()!
     var queue: MTLCommandQueue!
+    var texture: MTLTexture!
+    var pass: MTLRenderPassDescriptor!
     
     override func setUp() {
         
@@ -23,10 +25,10 @@ final class WaveformTests: XCTestCase {
         textureDesc.usage = [.renderTarget, .shaderRead, .shaderWrite]
         textureDesc.storageMode = .shared
 
-        let texture = device.makeTexture(descriptor: textureDesc)
+        texture = device.makeTexture(descriptor: textureDesc)
         XCTAssertNotNil(texture)
 
-        let pass = MTLRenderPassDescriptor()
+        pass = MTLRenderPassDescriptor()
         pass.colorAttachments[0].texture = texture
         pass.colorAttachments[0].storeAction = .store
         pass.colorAttachments[0].loadAction = .clear
