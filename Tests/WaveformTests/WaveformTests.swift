@@ -76,8 +76,16 @@ final class WaveformTests: XCTestCase {
         showTexture(texture: texture, name: "Waveform.png")
 
     }
+
+    func testRenderBasic() throws {
+
+        var minSamples: [Float] = [-0.1, -0.1, -0.1, -0.1]
+        var maxSamples: [Float] = [0.1, 0.1, 0.1, 0.1]
+
+        render(minValues: minSamples, maxValues: maxSamples)
+    }
     
-    func testRenderWaveform() throws {
+    func testRenderBeat() throws {
         guard let url = Bundle.module.url(forResource: "beat", withExtension: "aiff") else {
             XCTFail()
             return
