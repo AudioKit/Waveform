@@ -82,6 +82,8 @@ final class WaveformTests: XCTestCase {
         let tex = texture
         print("done")
         
+        XCTAssertFalse(texture.isBlack)
+        
         showTexture(texture: texture, name: "Waveform.png")
     }
 }
