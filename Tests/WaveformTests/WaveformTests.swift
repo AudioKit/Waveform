@@ -43,32 +43,6 @@ final class WaveformTests: XCTestCase {
         assert(CGImageDestinationFinalize(dest))
     }
     
-    func createImage(data: [UInt8], w: Int, h: Int) -> CGImage {
-
-        let dataSize = 4 * w * h
-        let ptr = UnsafeMutablePointer<UInt8>.allocate(capacity: data.count)
-        memcpy(UnsafeMutableRawPointer(ptr), data, dataSize)
-
-        let provider = CGDataProvider(dataInfo: nil, data: data, size: dataSize, releaseData: {_,_,_ in })!
-
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-
-        let image = CGImage(width: w,
-                            height: h,
-                            bitsPerComponent: 8,
-                            bitsPerPixel: 32,
-                            bytesPerRow: w*4,
-                            space: colorSpace,
-                            bitmapInfo: .alphaInfoMask, // ??
-                            provider: provider,
-                            decode: nil,
-                            shouldInterpolate: true,
-                            intent: .defaultIntent)!
-
-        return image
-
-    }
-    
     func testRenderWaveform() throws {
         guard let url = Bundle.module.url(forResource: "beat", withExtension: "aiff") else {
             XCTFail()
