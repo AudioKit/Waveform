@@ -33,7 +33,6 @@ final class WaveformTests: XCTestCase {
         pass.colorAttachments[0].texture = texture
         pass.colorAttachments[0].storeAction = .store
         pass.colorAttachments[0].loadAction = .clear
-        pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1)
     }
     
     func writeCGImage(image: CGImage, url: CFURL) {
@@ -46,6 +45,36 @@ final class WaveformTests: XCTestCase {
         let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent(name)
         print("saving to \(tmpURL)")
         writeCGImage(image: texture.cgImage, url: tmpURL as CFURL)
+    }
+
+    func render(minValues: [Float], maxValues: [Float]) {
+
+        let renderer = Renderer(device: device)
+
+        minValues.withUnsafeBufferPointer { ptr in
+            renderer.minWaveformBuffer = device.makeBuffer(bytes: ptr.baseAddress!,
+                                                        length: Int(minValues.count) * MemoryLayout<Float>.size)
+        }
+
+        maxValues.withUnsafeBufferPointer { ptr in
+            renderer.maxWaveformBuffer = device.makeBuffer(bytes: ptr.baseAddress!,
+                                                           length: Int(maxValues.count) * MemoryLayout<Float>.size)
+        }
+
+        let commandBuffer = queue.makeCommandBuffer()!
+        renderer.encode(to: commandBuffer, pass: pass)
+
+        let blit = commandBuffer.makeBlitCommandEncoder()!
+        blit.synchronize(resource: texture)
+        blit.endEncoding()
+
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+
+        XCTAssertFalse(texture.isBlack)
+
+        showTexture(texture: texture, name: "Waveform.png")
+
     }
     
     func testRenderWaveform() throws {
@@ -64,27 +93,14 @@ final class WaveformTests: XCTestCase {
         
         try! file.read(into: buffer)
         
-        let renderer = Renderer(device: device)
-        
         let leftChannelData = buffer.floatChannelData![0]
-        
-        renderer.minWaveformBuffer = device.makeBuffer(bytes: UnsafeMutablePointer(leftChannelData),
-                                                    length: Int(file.length) * MemoryLayout<Float>.size)
-        renderer.maxWaveformBuffer = device.makeBuffer(bytes: UnsafeMutablePointer(leftChannelData),
-                                                    length: Int(file.length) * MemoryLayout<Float>.size)
-        
-        let commandBuffer = queue.makeCommandBuffer()!
-        renderer.encode(to: commandBuffer, pass: pass)
-        
-        let blit = commandBuffer.makeBlitCommandEncoder()!
-        blit.synchronize(resource: texture)
-        blit.endEncoding()
-        
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
-        
-        XCTAssertFalse(texture.isBlack)
-        
-        showTexture(texture: texture, name: "Waveform.png")
+
+        var leftSamples: [Float] = []
+        for i in 0..<Int(buffer.frameLength) {
+            leftSamples.append(leftChannelData[i*Int(buffer.stride)])
+        }
+
+        render(minValues: leftSamples, maxValues: leftSamples)
+
     }
 }
