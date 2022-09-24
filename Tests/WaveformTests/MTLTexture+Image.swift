@@ -18,7 +18,7 @@ func createImage(data: UnsafeMutablePointer<UInt8>, w: Int, h: Int) -> CGImage {
                         bitsPerPixel: 32,
                         bytesPerRow: w*4,
                         space: colorSpace,
-                        bitmapInfo: .init(rawValue: 0),
+                        bitmapInfo: .init(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue),
                         provider: provider,
                         decode: nil,
                         shouldInterpolate: true,
