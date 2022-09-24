@@ -51,6 +51,18 @@ float sample_waveform(device const float* min_waveform,
     return (uv.y > min_value && uv.y < max_value) ? 1.0 : 0.0;
 }
 
+// From the graph in https://medium.com/@warrenm/thirty-days-of-metal-day-20-multisample-antialiasing-374389136b06
+constant float2 sample_offsets[8] = {
+    {-5, -5},
+    {-1, -3},
+    {3, -7},
+    {5, -1},
+    {-7, 1},
+    {-3, 5},
+    {1, 3},
+    {7,7}
+};
+
 fragment half4 waveform_frag(FragIn in   [[ stage_in ]],
                              device const float* min_waveform,
                              device const float* max_waveform,
@@ -58,10 +70,11 @@ fragment half4 waveform_frag(FragIn in   [[ stage_in ]],
                              constant Constants& constants) {
 
     half s = 0.0;
-    for(int i=0;i<4;++i) {
-        s += sample_waveform(min_waveform, max_waveform, count, in.uv + pos[i] / (2*count));
+    for(int i=0;i<8;++i) {
+        auto off = fwidth(in.uv) * (sample_offsets[i] / 8.0f);
+        s += sample_waveform(min_waveform, max_waveform, count, in.uv + off);
     }
-    s /= 4;
+    s /= 8;
     
     return {s,s,s,1.0};
 
