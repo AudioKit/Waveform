@@ -25,7 +25,7 @@ struct FragIn {
 
 
 constant float2 pos[4] = { {-1,-1}, {1,-1}, {-1,1}, {1,1 } };
-constant float2 uv[4] = { {0,0}, {1,0}, {0,1}, {1,1 } };
+constant float2 uv[4] = { {0, -1}, {1, -1}, {0,1}, {1,1 } };
 
 vertex FragIn waveform_vert(uint id [[ vertex_id ]]) {
     FragIn out;
@@ -38,20 +38,26 @@ struct Constants {
     
 };
 
+float sample_waveform(device const float* min_waveform,
+                      device const float* max_waveform,
+                      uint count,
+                      float2 uv) {
+
+    int x = clamp(int(count * uv.x), 0, int(count));
+
+    auto min_value = min_waveform[x];
+    auto max_value = max_waveform[x];
+
+    return (uv.y > min_value && uv.y < max_value) ? 1.0 : 0.0;
+}
+
 fragment half4 waveform_frag(FragIn in   [[ stage_in ]],
                              device const float* min_waveform,
                              device const float* max_waveform,
                              constant uint& count,
                              constant Constants& constants) {
-    
-    int x = clamp(int(count * in.uv.x), 0, int(count));
-    
-    auto min_value = min_waveform[x];
-    auto max_value = max_waveform[x];
 
-    // Transform to (-1, 1) interval.
-    auto y = in.uv.y * 2 - 1;
-    half s = (y > min_value && y < max_value) ? 1.0 : 0.0;
+    half s = sample_waveform(min_waveform, max_waveform, count, in.uv);
     
     return {s,s,s,1.0};
 
