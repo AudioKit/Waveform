@@ -19,6 +19,8 @@ class Renderer: NSObject, MTKViewDelegate {
     public var constants = Constants()
 
     private let inflightSemaphore = DispatchSemaphore(value: MaxBuffers)
+    
+    public var waveformBuffer: MTLBuffer!
 
     init(device: MTLDevice) {
         self.device = device

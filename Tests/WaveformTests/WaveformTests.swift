@@ -53,6 +53,11 @@ final class WaveformTests: XCTestCase {
         
         let renderer = Renderer(device: device)
         
+        let leftChannelData = buffer.floatChannelData![0]
+        
+        renderer.waveformBuffer = device.makeBuffer(bytes: UnsafeMutablePointer(leftChannelData),
+                                                    length: Int(file.length) * MemoryLayout<Float>.size)
+        
         let commandBuffer = queue.makeCommandBuffer()!
         renderer.encode(to: commandBuffer, pass: pass)
         
