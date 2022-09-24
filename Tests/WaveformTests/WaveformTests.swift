@@ -25,7 +25,6 @@ final class WaveformTests: XCTestCase {
         textureDesc.height = h
 
         textureDesc.usage = [.renderTarget, .shaderRead, .shaderWrite]
-        textureDesc.storageMode = .shared
 
         texture = device.makeTexture(descriptor: textureDesc)
         XCTAssertNotNil(texture)
