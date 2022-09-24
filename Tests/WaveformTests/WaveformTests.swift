@@ -50,5 +50,13 @@ final class WaveformTests: XCTestCase {
         let buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: AVAudioFrameCount(file.length))!
         
         try! file.read(into: buffer)
+        
+        let renderer = Renderer(device: device)
+        
+        let commandBuffer = queue.makeCommandBuffer()!
+        renderer.encode(to: commandBuffer, pass: pass)
+        
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
     }
 }

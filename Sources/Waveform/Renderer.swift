@@ -37,6 +37,20 @@ class Renderer: NSObject, MTKViewDelegate {
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
 
     }
+    
+    func encode(to commandBuffer: MTLCommandBuffer,
+              pass: MTLRenderPassDescriptor) {
+        
+        pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1)
+
+        let enc = commandBuffer.makeRenderCommandEncoder(descriptor: pass)!
+        enc.setRenderPipelineState(pipeline)
+        let c = [constants]
+        enc.setFragmentBytes(c, length: MemoryLayout<Constants>.size, index: 0)
+        enc.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
+        enc.endEncoding()
+        
+    }
 
     func draw(in view: MTKView) {
 
@@ -61,17 +75,8 @@ class Renderer: NSObject, MTKViewDelegate {
 
 
         if let renderPassDescriptor = view.currentRenderPassDescriptor, let currentDrawable = view.currentDrawable {
-
-            renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1)
-
-            let enc = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
-            enc.setRenderPipelineState(pipeline)
-            let c = [constants]
-            enc.setFragmentBytes(c, length: MemoryLayout<Constants>.size, index: 0)
-            var size = SIMD2<Int32>(Int32(view.drawableSize.width), Int32(view.drawableSize.height))
-            enc.setFragmentBytes(&size, length: MemoryLayout<SIMD2<Int32>>.size, index: 1)
-            enc.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
-            enc.endEncoding()
+            
+            encode(to: commandBuffer, pass: renderPassDescriptor)
 
             commandBuffer.present(currentDrawable)
         }
