@@ -3,6 +3,8 @@ import XCTest
 import AVFoundation
 import Metal
 import MetalKit
+import CoreFoundation
+import CoreGraphics
 
 final class WaveformTests: XCTestCase {
     let device = MTLCreateSystemDefaultDevice()!
@@ -35,6 +37,38 @@ final class WaveformTests: XCTestCase {
         pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1)
     }
     
+    func writeCGImage(image: CGImage, url: CFURL) {
+        let dest = CGImageDestinationCreateWithURL(url, kUTTypePNG, 1, nil)!
+        CGImageDestinationAddImage(dest, image, nil)
+        assert(CGImageDestinationFinalize(dest))
+    }
+    
+    func createImage(data: [UInt8], w: Int, h: Int) -> CGImage {
+
+        let dataSize = 4 * w * h
+        let ptr = UnsafeMutablePointer<UInt8>.allocate(capacity: data.count)
+        memcpy(UnsafeMutableRawPointer(ptr), data, dataSize)
+
+        let provider = CGDataProvider(dataInfo: nil, data: data, size: dataSize, releaseData: {_,_,_ in })!
+
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+
+        let image = CGImage(width: w,
+                            height: h,
+                            bitsPerComponent: 8,
+                            bitsPerPixel: 32,
+                            bytesPerRow: w*4,
+                            space: colorSpace,
+                            bitmapInfo: .alphaInfoMask, // ??
+                            provider: provider,
+                            decode: nil,
+                            shouldInterpolate: true,
+                            intent: .defaultIntent)!
+
+        return image
+
+    }
+    
     func testRenderWaveform() throws {
         guard let url = Bundle.module.url(forResource: "beat", withExtension: "aiff") else {
             XCTFail()
@@ -65,5 +99,8 @@ final class WaveformTests: XCTestCase {
         
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
+        
+        let tex = texture
+        print("done")
     }
 }
