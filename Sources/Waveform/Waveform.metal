@@ -48,10 +48,11 @@ fragment half4 waveform_frag(FragIn in   [[ stage_in ]],
     
     auto min_value = min_waveform[x];
     auto max_value = max_waveform[x];
-    
-    auto y = in.uv.y;
+
+    // Transform to (-1, 1) interval.
+    auto y = in.uv.y * 2 - 1;
     half s = (y > min_value && y < max_value) ? 1.0 : 0.0;
     
     return {s,s,s,1.0};
-    
+
 }
