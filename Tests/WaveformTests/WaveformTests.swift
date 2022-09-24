@@ -124,8 +124,9 @@ final class WaveformTests: XCTestCase {
             leftSamples.append(leftChannelData[i*Int(buffer.stride)])
         }
 
-        var minSamples = binMin(samples: leftSamples, binSize: 100)
-        var maxSamples = binMax(samples: leftSamples, binSize: 100)
+        let binSize = leftSamples.count / 512 // one bin per pixel
+        let minSamples = binMin(samples: leftSamples, binSize: binSize)
+        let maxSamples = binMax(samples: leftSamples, binSize: binSize)
 
         render(minValues: minSamples, maxValues: maxSamples)
 
