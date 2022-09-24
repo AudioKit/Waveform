@@ -19,7 +19,6 @@ final class WaveformTests: XCTestCase {
         textureDesc.pixelFormat = .bgra8Unorm
         textureDesc.width = w
         textureDesc.height = h
-                            //mipmapped:NO];
 
         textureDesc.usage = [.renderTarget, .shaderRead, .shaderWrite]
         textureDesc.storageMode = .shared
