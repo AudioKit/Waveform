@@ -55,7 +55,9 @@ final class WaveformTests: XCTestCase {
         
         let leftChannelData = buffer.floatChannelData![0]
         
-        renderer.waveformBuffer = device.makeBuffer(bytes: UnsafeMutablePointer(leftChannelData),
+        renderer.minWaveformBuffer = device.makeBuffer(bytes: UnsafeMutablePointer(leftChannelData),
+                                                    length: Int(file.length) * MemoryLayout<Float>.size)
+        renderer.maxWaveformBuffer = device.makeBuffer(bytes: UnsafeMutablePointer(leftChannelData),
                                                     length: Int(file.length) * MemoryLayout<Float>.size)
         
         let commandBuffer = queue.makeCommandBuffer()!

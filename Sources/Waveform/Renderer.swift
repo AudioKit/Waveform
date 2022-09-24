@@ -20,7 +20,8 @@ class Renderer: NSObject, MTKViewDelegate {
 
     private let inflightSemaphore = DispatchSemaphore(value: MaxBuffers)
     
-    public var waveformBuffer: MTLBuffer!
+    public var minWaveformBuffer: MTLBuffer!
+    public var maxWaveformBuffer: MTLBuffer!
 
     init(device: MTLDevice) {
         self.device = device
@@ -47,8 +48,13 @@ class Renderer: NSObject, MTKViewDelegate {
 
         let enc = commandBuffer.makeRenderCommandEncoder(descriptor: pass)!
         enc.setRenderPipelineState(pipeline)
+        enc.setFragmentBuffer(minWaveformBuffer, offset: 0, index: 0)
+        enc.setFragmentBuffer(maxWaveformBuffer, offset: 0, index: 1)
+        assert(minWaveformBuffer.length == maxWaveformBuffer.length)
+        var count = minWaveformBuffer.length / MemoryLayout<Float>.size
+        enc.setFragmentBytes(&count, length: MemoryLayout<Int32>.size, index: 2)
         let c = [constants]
-        enc.setFragmentBytes(c, length: MemoryLayout<Constants>.size, index: 0)
+        enc.setFragmentBytes(c, length: MemoryLayout<Constants>.size, index: 3)
         enc.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
         enc.endEncoding()
         
