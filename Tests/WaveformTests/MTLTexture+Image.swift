@@ -37,6 +37,9 @@ extension MTLTexture {
         switch pixelFormat {
         case .bgra8Unorm:
             getBytes(ptr, bytesPerRow: width*4, from: MTLRegionMake2D(0, 0, width, height), mipmapLevel: 0)
+            for i in 0..<(width*height) {
+                swap(&ptr[4*i], &ptr[4*i+2])
+            }
         default:
             fatalError()
         }
