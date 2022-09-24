@@ -43,6 +43,12 @@ final class WaveformTests: XCTestCase {
         assert(CGImageDestinationFinalize(dest))
     }
     
+    func showTexture(texture: MTLTexture, name: String) {
+        let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent(name)
+        print("saving to \(tmpURL)")
+        writeCGImage(image: texture.cgImage, url: tmpURL as CFURL)
+    }
+    
     func testRenderWaveform() throws {
         guard let url = Bundle.module.url(forResource: "beat", withExtension: "aiff") else {
             XCTFail()
@@ -76,5 +82,7 @@ final class WaveformTests: XCTestCase {
 
         let tex = texture
         print("done")
+        
+        showTexture(texture: texture, name: "Waveform.png")
     }
 }
