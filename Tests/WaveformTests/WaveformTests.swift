@@ -79,8 +79,8 @@ final class WaveformTests: XCTestCase {
 
     func testRenderBasic() throws {
 
-        var minSamples: [Float] = [-0.1, -0.1, -0.1, -0.1]
-        var maxSamples: [Float] = [0.1, 0.1, 0.1, 0.1]
+        let minSamples: [Float] = [-0.1, -0.1, -0.1, -0.1]
+        let maxSamples: [Float] = [0.1, 0.1, 0.1, 0.1]
 
         render(minValues: minSamples, maxValues: maxSamples)
     }
