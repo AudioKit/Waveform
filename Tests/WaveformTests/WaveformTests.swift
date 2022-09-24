@@ -1,8 +1,39 @@
 import XCTest
 @testable import Waveform
 import AVFoundation
+import Metal
+import MetalKit
 
 final class WaveformTests: XCTestCase {
+    let device = MTLCreateSystemDefaultDevice()!
+    var queue: MTLCommandQueue!
+    
+    override func setUp() {
+        
+        queue = device.makeCommandQueue()!
+
+        let w = 512
+        let h = 512
+
+        let textureDesc = MTLTextureDescriptor()
+        textureDesc.pixelFormat = .bgra8Unorm
+        textureDesc.width = w
+        textureDesc.height = h
+                            //mipmapped:NO];
+
+        textureDesc.usage = [.renderTarget, .shaderRead, .shaderWrite]
+        textureDesc.storageMode = .shared
+
+        let texture = device.makeTexture(descriptor: textureDesc)
+        XCTAssertNotNil(texture)
+
+        let pass = MTLRenderPassDescriptor()
+        pass.colorAttachments[0].texture = texture
+        pass.colorAttachments[0].storeAction = .store
+        pass.colorAttachments[0].loadAction = .clear
+        pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1)
+    }
+    
     func testRenderWaveform() throws {
         guard let url = Bundle.module.url(forResource: "beat", withExtension: "aiff") else {
             XCTFail()
