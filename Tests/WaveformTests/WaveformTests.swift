@@ -65,5 +65,8 @@ final class WaveformTests: XCTestCase {
         
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
+
+        let tex = texture
+        print("done")
     }
 }
