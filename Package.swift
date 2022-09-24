@@ -23,6 +23,7 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "WaveformTests",
-            dependencies: ["Waveform"]),
+            dependencies: ["Waveform"],
+            resources: [.copy("beat.aiff")]),
     ]
 )
