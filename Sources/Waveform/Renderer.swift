@@ -6,8 +6,10 @@ import MetalKit
 
 let MaxBuffers = 3
 
-struct Constants {
-    
+public struct Constants {
+    public init() {
+        
+    }
 }
 
 class Renderer: NSObject, MTKViewDelegate {
