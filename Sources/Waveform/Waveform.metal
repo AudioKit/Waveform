@@ -23,6 +23,17 @@ struct FragIn {
     float2 uv; // unit square UV coordinates
 };
 
+
+constant float2 pos[4] = { {-1,-1}, {1,-1}, {-1,1}, {1,1 } };
+constant float2 uv[4] = { {0,0}, {1,0}, {0,1}, {1,1 } };
+
+vertex FragIn waveform_vert(uint id [[ vertex_id ]]) {
+    FragIn out;
+    out.position = float4(pos[id], 0, 1);
+    out.uv = uv[id];
+    return out;
+}
+
 struct Constants {
     
 };
