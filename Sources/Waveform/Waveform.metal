@@ -20,7 +20,7 @@ kernel void waveform_bin(device const float* in,
 
 struct FragIn {
     float4 position [[ position ]];
-    float2 uv; // unit square UV coordinates
+    float2 uv; // (0, 1) x (-1, 1)
 };
 
 
