@@ -3,6 +3,8 @@ import XCTest
 import AVFoundation
 import Metal
 import MetalKit
+import CoreFoundation
+import CoreGraphics
 
 final class WaveformTests: XCTestCase {
     let device = MTLCreateSystemDefaultDevice()!
@@ -33,6 +35,12 @@ final class WaveformTests: XCTestCase {
         pass.colorAttachments[0].storeAction = .store
         pass.colorAttachments[0].loadAction = .clear
         pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1)
+    }
+    
+    func writeCGImage(image: CGImage, url: CFURL) {
+        let dest = CGImageDestinationCreateWithURL(url, kUTTypePNG, 1, nil)!
+        CGImageDestinationAddImage(dest, image, nil)
+        assert(CGImageDestinationFinalize(dest))
     }
     
     func testRenderWaveform() throws {
