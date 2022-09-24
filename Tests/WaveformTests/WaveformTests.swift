@@ -84,6 +84,22 @@ final class WaveformTests: XCTestCase {
 
         render(minValues: minSamples, maxValues: maxSamples)
     }
+
+    func binMin(samples: [Float], binSize: Int) -> [Float] {
+        var out: [Float] = []
+        for bin in 0..<samples.count/binSize {
+            out.append(samples[(bin*binSize) ..< ((bin+1)*binSize)].min()!)
+        }
+        return out
+    }
+
+    func binMax(samples: [Float], binSize: Int) -> [Float] {
+        var out: [Float] = []
+        for bin in 0..<samples.count/binSize {
+            out.append(samples[(bin*binSize) ..< ((bin+1)*binSize)].max()!)
+        }
+        return out
+    }
     
     func testRenderBeat() throws {
         guard let url = Bundle.module.url(forResource: "beat", withExtension: "aiff") else {
@@ -108,7 +124,10 @@ final class WaveformTests: XCTestCase {
             leftSamples.append(leftChannelData[i*Int(buffer.stride)])
         }
 
-        render(minValues: leftSamples, maxValues: leftSamples)
+        var minSamples = binMin(samples: leftSamples, binSize: 100)
+        var maxSamples = binMax(samples: leftSamples, binSize: 100)
+
+        render(minValues: minSamples, maxValues: maxSamples)
 
     }
 }
