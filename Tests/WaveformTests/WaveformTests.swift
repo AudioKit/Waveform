@@ -76,6 +76,10 @@ final class WaveformTests: XCTestCase {
         let commandBuffer = queue.makeCommandBuffer()!
         renderer.encode(to: commandBuffer, pass: pass)
         
+        let blit = commandBuffer.makeBlitCommandEncoder()!
+        blit.synchronize(resource: texture)
+        blit.endEncoding()
+        
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
 
