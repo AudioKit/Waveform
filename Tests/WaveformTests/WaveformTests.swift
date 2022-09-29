@@ -36,9 +36,11 @@ final class WaveformTests: XCTestCase {
     }
     
     func writeCGImage(image: CGImage, url: CFURL) {
+        #if os(macOS)
         let dest = CGImageDestinationCreateWithURL(url, kUTTypePNG, 1, nil)!
         CGImageDestinationAddImage(dest, image, nil)
         assert(CGImageDestinationFinalize(dest))
+        #endif
     }
     
     func showTexture(texture: MTLTexture, name: String) {
@@ -64,9 +66,11 @@ final class WaveformTests: XCTestCase {
         let commandBuffer = queue.makeCommandBuffer()!
         renderer.encode(to: commandBuffer, pass: pass)
 
+        #if os(macOS)
         let blit = commandBuffer.makeBlitCommandEncoder()!
         blit.synchronize(resource: texture)
         blit.endEncoding()
+        #endif
 
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
