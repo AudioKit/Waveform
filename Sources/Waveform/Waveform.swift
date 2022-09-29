@@ -4,11 +4,11 @@ import MetalKit
 #if os(macOS)
 public struct Waveform : NSViewRepresentable {
 
-    var shader: String?
+    var samples: [Float]
     var constants: Constants
 
-    public init(shader: String, constants: Constants) {
-        self.shader = shader
+    public init(samples: [Float], constants: Constants) {
+        self.samples = samples
         self.constants = constants
     }
 
@@ -45,11 +45,11 @@ public struct Waveform : NSViewRepresentable {
 #else
 public struct Waveform : UIViewRepresentable {
 
-    var shader: String
+    var samples: [Float]
     var constants: Constants
 
-    public init(shader: String, constants: Constants) {
-        self.shader = shader
+    public init(samples: [Float], constants: Constants) {
+        self.samples = samples
         self.constants = constants
     }
 
