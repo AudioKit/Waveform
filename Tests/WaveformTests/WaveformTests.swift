@@ -49,11 +49,12 @@ final class WaveformTests: XCTestCase {
         writeCGImage(image: texture.cgImage, url: tmpURL as CFURL)
     }
 
-    func render(minValues: [Float], maxValues: [Float]) {
+    func render(samples: [Float]) {
 
         let renderer = Renderer(device: device)
         
-        renderer.set(minValues: minValues, maxValues: maxValues)
+        let binSize = samples.count / 2048 // four bins per pixel for AA
+        renderer.set(samples: samples, binSize: binSize)
 
         let commandBuffer = queue.makeCommandBuffer()!
         renderer.encode(to: commandBuffer, pass: pass)
@@ -71,14 +72,6 @@ final class WaveformTests: XCTestCase {
 
         showTexture(texture: texture, name: "Waveform.png")
 
-    }
-
-    func testRenderBasic() throws {
-
-        let minSamples: [Float] = [-0.1, -0.2, -0.1, -0.1]
-        let maxSamples: [Float] = [0.1, 0.1, 0.2, 0.1]
-
-        render(minValues: minSamples, maxValues: maxSamples)
     }
 
     func binMin(samples: [Float], binSize: Int) -> [Float] {
@@ -120,11 +113,7 @@ final class WaveformTests: XCTestCase {
             leftSamples.append(leftChannelData[i*Int(buffer.stride)])
         }
 
-        let binSize = leftSamples.count / 2048 // four bins per pixel for AA
-        let minSamples = binMin(samples: leftSamples, binSize: binSize)
-        let maxSamples = binMax(samples: leftSamples, binSize: binSize)
-
-        render(minValues: minSamples, maxValues: maxSamples)
+        render(samples: leftSamples)
 
     }
 }

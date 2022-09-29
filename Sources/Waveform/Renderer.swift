@@ -37,6 +37,9 @@ class Renderer: NSObject, MTKViewDelegate {
         rpd.colorAttachments[0].pixelFormat = .bgra8Unorm
 
         pipeline = try! device.makeRenderPipelineState(descriptor: rpd)
+        
+        super.init()
+        set(minValues: [0], maxValues: [0])
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -97,5 +100,11 @@ class Renderer: NSObject, MTKViewDelegate {
     func set(minValues: [Float], maxValues: [Float]) {
         minWaveformBuffer = device.makeBuffer(minValues)!
         maxWaveformBuffer = device.makeBuffer(maxValues)!
+    }
+    
+    func set(samples: [Float], binSize: Int) {
+        let minSamples = binMin(samples: samples, binSize: binSize)
+        let maxSamples = binMax(samples: samples, binSize: binSize)
+        set(minValues: minSamples, maxValues: maxSamples)
     }
 }
