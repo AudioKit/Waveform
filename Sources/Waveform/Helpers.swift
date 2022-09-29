@@ -18,7 +18,7 @@ func binMax(samples: [Float], binSize: Int) -> [Float] {
 }
 
 extension MTLDevice {
-    func makeBuffer(_ values: [Float]) {
+    func makeBuffer(_ values: [Float]) -> MTLBuffer? {
         self.makeBuffer(bytes: values, length: MemoryLayout<Float>.size * values.count)
     }
 }

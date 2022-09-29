@@ -22,8 +22,8 @@ class Renderer: NSObject, MTKViewDelegate {
 
     private let inflightSemaphore = DispatchSemaphore(value: MaxBuffers)
     
-    public var minWaveformBuffer: MTLBuffer!
-    public var maxWaveformBuffer: MTLBuffer!
+    var minWaveformBuffer: MTLBuffer!
+    var maxWaveformBuffer: MTLBuffer!
 
     init(device: MTLDevice) {
         self.device = device
@@ -92,5 +92,10 @@ class Renderer: NSObject, MTKViewDelegate {
         }
         commandBuffer.commit()
 
+    }
+    
+    func set(minValues: [Float], maxValues: [Float]) {
+        minWaveformBuffer = device.makeBuffer(minValues)!
+        maxWaveformBuffer = device.makeBuffer(maxValues)!
     }
 }

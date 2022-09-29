@@ -52,16 +52,8 @@ final class WaveformTests: XCTestCase {
     func render(minValues: [Float], maxValues: [Float]) {
 
         let renderer = Renderer(device: device)
-
-        minValues.withUnsafeBufferPointer { ptr in
-            renderer.minWaveformBuffer = device.makeBuffer(bytes: ptr.baseAddress!,
-                                                        length: Int(minValues.count) * MemoryLayout<Float>.size)
-        }
-
-        maxValues.withUnsafeBufferPointer { ptr in
-            renderer.maxWaveformBuffer = device.makeBuffer(bytes: ptr.baseAddress!,
-                                                           length: Int(maxValues.count) * MemoryLayout<Float>.size)
-        }
+        
+        renderer.set(minValues: minValues, maxValues: maxValues)
 
         let commandBuffer = queue.makeCommandBuffer()!
         renderer.encode(to: commandBuffer, pass: pass)
