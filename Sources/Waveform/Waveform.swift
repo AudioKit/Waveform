@@ -34,28 +34,16 @@ public struct Waveform : NSViewRepresentable {
         metalView.enableSetNeedsDisplay = true
         metalView.isPaused = true
         metalView.delegate = context.coordinator.renderer
-//        if let shader = shader {
-//            context.coordinator.renderer.setShader(source: shader)
-//        } else {
-//            context.coordinator.renderer.setDefaultShader()
-//        }
         return metalView
     }
 
     public func updateNSView(_ nsView: NSViewType, context: Context) {
-//        if let shader = shader {
-//            context.coordinator.renderer.setShader(source: shader)
-//        }
         context.coordinator.renderer.constants = constants
         nsView.setNeedsDisplay(nsView.bounds)
     }
 }
 #else
-/// Shadertoy-style view. Specify a fragment shader (must be named "mainImage") and a struct of constants
-/// to pass to the shader. In order to ensure the constants struct is consistent with the MSL version, it's
-/// best to include it in a Swift briding header. Constants are bound at position 0, and a uint2 for the view size
-/// is bound at position 1.
-public struct Waveform<Constants> : UIViewRepresentable {
+public struct Waveform : UIViewRepresentable {
 
     var shader: String
     var constants: Constants
@@ -66,10 +54,10 @@ public struct Waveform<Constants> : UIViewRepresentable {
     }
 
     public class Coordinator {
-        var renderer: Renderer<Constants>
+        var renderer: Renderer
 
         init(constants: Constants) {
-            renderer = Renderer<Constants>(device: MTLCreateSystemDefaultDevice()!, constants: constants)
+            renderer = Renderer(device: MTLCreateSystemDefaultDevice()!)
         }
     }
 
@@ -83,12 +71,10 @@ public struct Waveform<Constants> : UIViewRepresentable {
         metalView.enableSetNeedsDisplay = true
         metalView.isPaused = true
         metalView.delegate = context.coordinator.renderer
-        context.coordinator.renderer.setShader(source: shader)
         return metalView
     }
 
     public func updateUIView(_ uiView: UIViewType, context: Context) {
-        context.coordinator.renderer.setShader(source: shader)
         context.coordinator.renderer.constants = constants
         uiView.setNeedsDisplay()
     }
