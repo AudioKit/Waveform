@@ -47,8 +47,16 @@ float sample_waveform(device const float* min_waveform,
 
     auto min_value = min_waveform[x];
     auto max_value = max_waveform[x];
+    
+    auto falloff = 5 * length(fwidth(uv));
+    
+    // Feather the top and bottom.
+    auto s0 = smoothstep(min_value - falloff, min_value + falloff, uv.y);
+    auto s1 = 1.0 - smoothstep(max_value - falloff, max_value + falloff, uv.y);
 
-    return (uv.y > min_value && uv.y < max_value) ? 1.0 : 0.0;
+    // return (uv.y > min_value && uv.y < max_value) ? 1.0 : 0.0;
+    
+    return s0 * s1;
 }
 
 // From the graph in https://medium.com/@warrenm/thirty-days-of-metal-day-20-multisample-antialiasing-374389136b06
