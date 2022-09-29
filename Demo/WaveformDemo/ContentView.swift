@@ -7,8 +7,8 @@ struct ContentView: View {
         var s: [Float] = []
         let size = 128
         for i in 0..<size {
-            let sine = sin(Float(i * 2) * .pi / Float(size))
-            s.append(sine + 0.1 * Float.random(in: 0...1))
+            let sine = sin(Float(i * 2) * .pi / Float(size)) * 0.9
+            s.append(sine + 0.1 * Float.random(in: -1...1))
         }
         return s
     }
