@@ -12,10 +12,6 @@ public struct Waveform : NSViewRepresentable {
         self.constants = constants
     }
 
-    public init(constants: Constants) {
-        self.constants = constants
-    }
-
     public class Coordinator {
         var renderer: Renderer
 
