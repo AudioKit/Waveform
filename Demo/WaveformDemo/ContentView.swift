@@ -14,17 +14,21 @@ class WaveformDemoModel: ObservableObject {
         }
         samples = SampleBuffer(samples: s)
     }
+
+    init(file: AVAudioFile) {
+        let stereo = file.toFloatChannelData()!
+        samples = SampleBuffer(samples: stereo[0])
+    }
+}
+
+func getFile() -> AVAudioFile {
+    let url = Bundle.main.url(forResource: "beat", withExtension: "aiff")!
+    return try! AVAudioFile(forReading: url)
 }
 
 struct ContentView: View {
 
-    var file: AVAudioFile {
-        let url = Bundle.main.url(forResource: "beat", withExtension: "aiff")!
-        return try! AVAudioFile(forReading: url)
-
-    }
-
-    @StateObject var model = WaveformDemoModel()
+    @StateObject var model = WaveformDemoModel(file: getFile())
 
     @State var start = 0.0
     @State var length = 0.0
@@ -33,7 +37,6 @@ struct ContentView: View {
         VStack {
 
             Waveform(samples: model.samples, start: Int(start), length: Int(length))
-//            Waveform(file: file, start: sampleCount, length: sampleCount)
 
             HStack {
                 Slider(value: $start, in: 0...Double(model.samples.count-1))

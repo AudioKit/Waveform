@@ -54,7 +54,7 @@ extension AVAudioFile {
     }
 
     /// converts to Swift friendly Float array
-    func toFloatChannelData() -> [[Float]]? {
+    public func toFloatChannelData() -> [[Float]]? {
         guard let pcmBuffer = toAVAudioPCMBuffer(),
               let data = pcmBuffer.toFloatChannelData() else { return nil }
         return data
