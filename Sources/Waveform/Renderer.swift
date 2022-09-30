@@ -123,10 +123,10 @@ class Renderer: NSObject, MTKViewDelegate {
         minBuffers.removeAll()
         maxBuffers.removeAll()
         
-        var minSamples = samples
-        var maxSamples = samples
+        var minSamples = Array(samples[start..<start+length])
+        var maxSamples = Array(samples[start..<start+length])
         
-        var s = samples.count
+        var s = minSamples.count
         while s > 2 {
             print("samples: \(s)")
             minSamples = binMin(samples: minSamples, binSize: 2)

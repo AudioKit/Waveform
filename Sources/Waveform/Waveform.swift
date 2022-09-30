@@ -15,9 +15,9 @@ public struct Waveform : NSViewRepresentable {
         self.constants = constants
         self.start = start
         if length > 0 {
-            self.length = length
+            self.length = min(length, (samples.count - start))
         } else {
-            self.length = samples.count
+            self.length = samples.count - start
         }
     }
 
