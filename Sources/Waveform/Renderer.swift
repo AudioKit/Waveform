@@ -73,7 +73,7 @@ class Renderer: NSObject, MTKViewDelegate {
         let startFactor = Float(start) / highestResolutionCount
         let lengthFactor = Float(length) / highestResolutionCount
         
-        let (minBuffer, maxBuffer) = selectBuffers(width: width)
+        let (minBuffer, maxBuffer) = selectBuffers(width: width / CGFloat(lengthFactor))
         let enc = commandBuffer.makeRenderCommandEncoder(descriptor: pass)!
         enc.setRenderPipelineState(pipeline)
 
