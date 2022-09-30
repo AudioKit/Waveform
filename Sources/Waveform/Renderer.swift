@@ -68,16 +68,23 @@ class Renderer: NSObject, MTKViewDelegate {
                 width: CGFloat) {
         
         pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1)
+
+        let highestResolutionCount = Float(lastSamples.samples.count)
+        let startFactor = Float(start) / highestResolutionCount
+        let lengthFactor = Float(length) / highestResolutionCount
         
         let (minBuffer, maxBuffer) = selectBuffers(width: width)
-
         let enc = commandBuffer.makeRenderCommandEncoder(descriptor: pass)!
         enc.setRenderPipelineState(pipeline)
-        enc.setFragmentBuffer(minBuffer, offset: 0, index: 0)
-        enc.setFragmentBuffer(maxBuffer, offset: 0, index: 1)
+
+        let bufferLength = Float(minBuffer.length / MemoryLayout<Float>.size)
+        let bufferStart = Int(bufferLength * startFactor)
+        var bufferCount = Int(bufferLength * lengthFactor)
+
+        enc.setFragmentBuffer(minBuffer, offset: bufferStart * MemoryLayout<Float>.size, index: 0)
+        enc.setFragmentBuffer(maxBuffer, offset: bufferStart * MemoryLayout<Float>.size, index: 1)
         assert(minBuffer.length == maxBuffer.length)
-        var count = minBuffer.length / MemoryLayout<Float>.size
-        enc.setFragmentBytes(&count, length: MemoryLayout<Int32>.size, index: 2)
+        enc.setFragmentBytes(&bufferCount, length: MemoryLayout<Int32>.size, index: 2)
         let c = [constants]
         enc.setFragmentBytes(c, length: MemoryLayout<Constants>.size, index: 3)
         enc.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)

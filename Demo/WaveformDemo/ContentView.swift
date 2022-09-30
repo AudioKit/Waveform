@@ -26,17 +26,19 @@ struct ContentView: View {
 
     @StateObject var model = WaveformDemoModel()
 
-    @State var sampleCount = 20000
+    @State var start = 0
+    @State var length = 0
+    let formatter = NumberFormatter()
     var body: some View {
         VStack {
 
-            Waveform(samples: model.samples, start: sampleCount, length: sampleCount)
+            Waveform(samples: model.samples, start: start, length: length)
 //            Waveform(file: file, start: sampleCount, length: sampleCount)
-                .gesture(DragGesture(minimumDistance: 0).onChanged { touch in
-                    sampleCount += Int(touch.translation.width * 100)
-                    print(sampleCount)
 
-                })
+            HStack {
+                TextField("Start", value: $start, formatter: formatter)
+                TextField("Length", value: $length, formatter: formatter)
+            }
 
         }
         .padding()
