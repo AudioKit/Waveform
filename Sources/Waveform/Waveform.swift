@@ -1,3 +1,4 @@
+import AVFoundation
 import SwiftUI
 import MetalKit
 
@@ -9,6 +10,12 @@ public struct Waveform : NSViewRepresentable {
 
     public init(samples: [Float], constants: Constants = Constants()) {
         self.samples = samples
+        self.constants = constants
+    }
+
+    public init(file: AVAudioFile, constants: Constants = Constants()) {
+        let stereo = file.toFloatChannelData()!
+        self.samples = stereo[0]
         self.constants = constants
     }
 

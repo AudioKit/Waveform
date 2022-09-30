@@ -82,22 +82,9 @@ final class WaveformTests: XCTestCase {
         
         let file = try! AVAudioFile(forReading: url)
         
-        let audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32,
-                                        sampleRate: file.fileFormat.sampleRate,
-                                        channels: file.fileFormat.channelCount, interleaved: false)!
-        
-        let buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: AVAudioFrameCount(file.length))!
-        
-        try! file.read(into: buffer)
-        
-        let leftChannelData = buffer.floatChannelData![0]
+        let stereo = file.toFloatChannelData()!
 
-        var leftSamples: [Float] = []
-        for i in 0..<Int(buffer.frameLength) {
-            leftSamples.append(leftChannelData[i*Int(buffer.stride)])
-        }
-
-        render(samples: leftSamples)
+        render(samples: stereo[0])
 
     }
 }
