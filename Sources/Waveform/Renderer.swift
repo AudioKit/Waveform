@@ -24,6 +24,8 @@ class Renderer: NSObject, MTKViewDelegate {
     
     var minBuffers: [MTLBuffer] = []
     var maxBuffers: [MTLBuffer] = []
+    var start = 0
+    var length = 0
 
     init(device: MTLDevice) {
         self.device = device
@@ -113,8 +115,11 @@ class Renderer: NSObject, MTKViewDelegate {
 
     }
     
-    func set(samples: [Float]) {
-        
+    func set(samples: [Float], start: Int, length: Int) {
+
+        self.start = start
+        self.length = length
+
         minBuffers.removeAll()
         maxBuffers.removeAll()
         

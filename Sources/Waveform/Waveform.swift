@@ -6,17 +6,24 @@ import MetalKit
 public struct Waveform : NSViewRepresentable {
 
     var samples: [Float]
+    var start: Int
+    var length: Int
     var constants: Constants
 
-    public init(samples: [Float], constants: Constants = Constants()) {
+    public init(samples: [Float], start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
         self.samples = samples
         self.constants = constants
+        self.start = start
+        if length > 0 {
+            self.length = length
+        } else {
+            self.length = samples.count
+        }
     }
 
-    public init(file: AVAudioFile, constants: Constants = Constants()) {
+    public init(file: AVAudioFile, start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
         let stereo = file.toFloatChannelData()!
-        self.samples = stereo[0]
-        self.constants = constants
+        self.init(samples: stereo[0], start: start, length: length, constants: constants)
     }
 
     public class Coordinator {
@@ -43,7 +50,9 @@ public struct Waveform : NSViewRepresentable {
     public func updateNSView(_ nsView: NSViewType, context: Context) {
         let renderer = context.coordinator.renderer
         renderer.constants = constants
-        renderer.set(samples: samples)
+        renderer.set(samples: samples,
+                     start: start,
+                     length: length)
         nsView.setNeedsDisplay(nsView.bounds)
     }
 }
@@ -51,17 +60,24 @@ public struct Waveform : NSViewRepresentable {
 public struct Waveform : UIViewRepresentable {
 
     var samples: [Float]
+    var start: Int
+    var length: Int
     var constants: Constants
 
-    public init(samples: [Float], constants: Constants = Constants()) {
+    public init(samples: [Float], start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
         self.samples = samples
         self.constants = constants
+        self.start = start
+        if length > 0 {
+            self.length = length
+        } else {
+            self.length = samples.count
+        }
     }
 
-    public init(file: AVAudioFile, constants: Constants = Constants()) {
+    public init(file: AVAudioFile, start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
         let stereo = file.toFloatChannelData()!
-        self.samples = stereo[0]
-        self.constants = constants
+        self.init(samples: stereo[0], start: start, length: length, constants: constants)
     }
 
     public class Coordinator {
@@ -88,7 +104,9 @@ public struct Waveform : UIViewRepresentable {
     public func updateUIView(_ uiView: UIViewType, context: Context) {
         let renderer = context.coordinator.renderer
         renderer.constants = constants
-        renderer.set(samples: samples)
+        renderer.set(samples: samples,
+                     start: start,
+                     length: length)
         uiView.setNeedsDisplay()
     }
 
