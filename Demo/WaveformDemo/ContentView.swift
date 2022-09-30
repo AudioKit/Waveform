@@ -24,10 +24,12 @@ struct ContentView: View {
     var body: some View {
         VStack {
 
-            Waveform(samples: samples, start: 20000, length: sampleCount)
-            Waveform(file: file, start: 20000, length: sampleCount)
+//            Waveform(samples: samples, start: sampleCount, length: sampleCount)
+            Waveform(file: file, start: sampleCount, length: sampleCount)
                 .gesture(DragGesture(minimumDistance: 0).onChanged { touch in
                     sampleCount += Int(touch.translation.width * 100)
+                    print(sampleCount)
+
                 })
 
         }
