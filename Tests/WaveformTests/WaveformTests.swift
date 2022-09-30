@@ -57,7 +57,7 @@ final class WaveformTests: XCTestCase {
         renderer.set(samples: samples, binSize: binSize)
 
         let commandBuffer = queue.makeCommandBuffer()!
-        renderer.encode(to: commandBuffer, pass: pass)
+        renderer.encode(to: commandBuffer, pass: pass, width: 512)
 
         #if os(macOS)
         let blit = commandBuffer.makeBlitCommandEncoder()!
