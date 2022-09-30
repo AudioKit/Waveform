@@ -22,8 +22,8 @@ class Renderer: NSObject, MTKViewDelegate {
 
     private let inflightSemaphore = DispatchSemaphore(value: MaxBuffers)
     
-    var minWaveformBuffer: MTLBuffer!
-    var maxWaveformBuffer: MTLBuffer!
+    var minBuffers: [MTLBuffer] = []
+    var maxBuffers: [MTLBuffer] = []
 
     init(device: MTLDevice) {
         self.device = device
@@ -39,24 +39,40 @@ class Renderer: NSObject, MTKViewDelegate {
         pipeline = try! device.makeRenderPipelineState(descriptor: rpd)
         
         super.init()
-        set(minValues: [0], maxValues: [0])
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
 
     }
     
+    func selectBuffers(width: CGFloat) -> (MTLBuffer, MTLBuffer) {
+        
+        var level = 0
+        for (minBuffer, maxBuffer) in zip(minBuffers, maxBuffers) {
+            if CGFloat(minBuffer.length / MemoryLayout<Float>.size) < width {
+                print("selected level \(level)")
+                return (minBuffer, maxBuffer)
+            }
+            level += 1
+        }
+        
+        return (minBuffers.last!, maxBuffers.last!)
+    }
+    
     func encode(to commandBuffer: MTLCommandBuffer,
-              pass: MTLRenderPassDescriptor) {
+                pass: MTLRenderPassDescriptor,
+                width: CGFloat) {
         
         pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1)
+        
+        let (minBuffer, maxBuffer) = selectBuffers(width: width)
 
         let enc = commandBuffer.makeRenderCommandEncoder(descriptor: pass)!
         enc.setRenderPipelineState(pipeline)
-        enc.setFragmentBuffer(minWaveformBuffer, offset: 0, index: 0)
-        enc.setFragmentBuffer(maxWaveformBuffer, offset: 0, index: 1)
-        assert(minWaveformBuffer.length == maxWaveformBuffer.length)
-        var count = minWaveformBuffer.length / MemoryLayout<Float>.size
+        enc.setFragmentBuffer(minBuffer, offset: 0, index: 0)
+        enc.setFragmentBuffer(maxBuffer, offset: 0, index: 1)
+        assert(minBuffer.length == maxBuffer.length)
+        var count = minBuffer.length / MemoryLayout<Float>.size
         enc.setFragmentBytes(&count, length: MemoryLayout<Int32>.size, index: 2)
         let c = [constants]
         enc.setFragmentBytes(c, length: MemoryLayout<Constants>.size, index: 3)
@@ -89,7 +105,7 @@ class Renderer: NSObject, MTKViewDelegate {
 
         if let renderPassDescriptor = view.currentRenderPassDescriptor, let currentDrawable = view.currentDrawable {
             
-            encode(to: commandBuffer, pass: renderPassDescriptor)
+            encode(to: commandBuffer, pass: renderPassDescriptor, width: size.width)
 
             commandBuffer.present(currentDrawable)
         }
@@ -97,14 +113,23 @@ class Renderer: NSObject, MTKViewDelegate {
 
     }
     
-    func set(minValues: [Float], maxValues: [Float]) {
-        minWaveformBuffer = device.makeBuffer(minValues)!
-        maxWaveformBuffer = device.makeBuffer(maxValues)!
-    }
-    
     func set(samples: [Float], binSize: Int) {
-        let minSamples = binMin(samples: samples, binSize: binSize)
-        let maxSamples = binMax(samples: samples, binSize: binSize)
-        set(minValues: minSamples, maxValues: maxSamples)
+        
+        minBuffers.removeAll()
+        maxBuffers.removeAll()
+        
+        var minSamples = samples
+        var maxSamples = samples
+        
+        var s = samples.count
+        while s > 2 {
+            print("samples: \(s)")
+            minSamples = binMin(samples: minSamples, binSize: 2)
+            maxSamples = binMax(samples: maxSamples, binSize: 2)
+            s /= 2
+            
+            minBuffers.append(device.makeBuffer(minSamples)!)
+            maxBuffers.append(device.makeBuffer(maxSamples)!)
+        }
     }
 }
