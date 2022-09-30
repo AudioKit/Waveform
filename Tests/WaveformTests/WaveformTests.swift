@@ -53,8 +53,7 @@ final class WaveformTests: XCTestCase {
 
         let renderer = Renderer(device: device)
         
-        let binSize = samples.count / 512
-        renderer.set(samples: samples, binSize: binSize)
+        renderer.set(samples: samples)
 
         let commandBuffer = queue.makeCommandBuffer()!
         renderer.encode(to: commandBuffer, pass: pass, width: 512)

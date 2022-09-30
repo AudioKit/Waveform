@@ -113,7 +113,7 @@ class Renderer: NSObject, MTKViewDelegate {
 
     }
     
-    func set(samples: [Float], binSize: Int) {
+    func set(samples: [Float]) {
         
         minBuffers.removeAll()
         maxBuffers.removeAll()

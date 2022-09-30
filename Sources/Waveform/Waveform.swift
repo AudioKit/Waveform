@@ -43,7 +43,7 @@ public struct Waveform : NSViewRepresentable {
     public func updateNSView(_ nsView: NSViewType, context: Context) {
         let renderer = context.coordinator.renderer
         renderer.constants = constants
-        renderer.set(samples: samples, binSize: Int(CGFloat(samples.count) / 1024))
+        renderer.set(samples: samples)
         nsView.setNeedsDisplay(nsView.bounds)
     }
 }
