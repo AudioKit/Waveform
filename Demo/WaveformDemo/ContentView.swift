@@ -26,18 +26,18 @@ struct ContentView: View {
 
     @StateObject var model = WaveformDemoModel()
 
-    @State var start = 0
-    @State var length = 0
+    @State var start = 0.0
+    @State var length = 0.0
     let formatter = NumberFormatter()
     var body: some View {
         VStack {
 
-            Waveform(samples: model.samples, start: start, length: length)
+            Waveform(samples: model.samples, start: Int(start), length: Int(length))
 //            Waveform(file: file, start: sampleCount, length: sampleCount)
 
             HStack {
-                TextField("Start", value: $start, formatter: formatter)
-                TextField("Length", value: $length, formatter: formatter)
+                Slider(value: $start, in: 0...Double(model.samples.count-1))
+                Slider(value: $length, in: 0...Double(model.samples.count-1))
             }
 
         }

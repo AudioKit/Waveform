@@ -8,4 +8,8 @@ public class SampleBuffer {
     public init(samples: [Float]) {
         self.samples = samples
     }
+
+    public var count: Int {
+        samples.count
+    }
 }
