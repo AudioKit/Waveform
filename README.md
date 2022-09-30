@@ -1,4 +1,5 @@
 # Waveform
-GPU accelerated waveform view
+
+GPU accelerated SwiftUI waveform view
 
 ![waveform-demo](demo.png)
