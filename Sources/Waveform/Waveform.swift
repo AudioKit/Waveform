@@ -7,7 +7,7 @@ public struct Waveform : NSViewRepresentable {
     var samples: [Float]
     var constants: Constants
 
-    public init(samples: [Float], constants: Constants) {
+    public init(samples: [Float], constants: Constants = Constants()) {
         self.samples = samples
         self.constants = constants
     }

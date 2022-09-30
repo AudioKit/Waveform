@@ -12,6 +12,7 @@
 		F1A202B828DEA420007CD919 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1A202B728DEA420007CD919 /* Assets.xcassets */; };
 		F1A202BC28DEA420007CD919 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1A202BB28DEA420007CD919 /* Preview Assets.xcassets */; };
 		F1A202C628DEA96C007CD919 /* Waveform in Frameworks */ = {isa = PBXBuildFile; productRef = F1A202C528DEA96C007CD919 /* Waveform */; };
+		F1FB409728E6660E00AFA732 /* beat.aiff in Resources */ = {isa = PBXBuildFile; fileRef = F1FB409628E6660E00AFA732 /* beat.aiff */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		F1A202B928DEA420007CD919 /* WaveformDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WaveformDemo.entitlements; sourceTree = "<group>"; };
 		F1A202BB28DEA420007CD919 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F1A202C328DEA7BC007CD919 /* Waveform */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Waveform; path = ..; sourceTree = "<group>"; };
+		F1FB409628E6660E00AFA732 /* beat.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; name = beat.aiff; path = ../../Tests/WaveformTests/beat.aiff; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				F1A202B328DEA41E007CD919 /* WaveformDemoApp.swift */,
+				F1FB409628E6660E00AFA732 /* beat.aiff */,
 				F1A202B528DEA41E007CD919 /* ContentView.swift */,
 				F1A202B728DEA420007CD919 /* Assets.xcassets */,
 				F1A202B928DEA420007CD919 /* WaveformDemo.entitlements */,
@@ -150,6 +153,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1FB409728E6660E00AFA732 /* beat.aiff in Resources */,
 				F1A202BC28DEA420007CD919 /* Preview Assets.xcassets in Resources */,
 				F1A202B828DEA420007CD919 /* Assets.xcassets in Resources */,
 			);
