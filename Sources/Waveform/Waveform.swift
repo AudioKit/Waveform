@@ -5,25 +5,20 @@ import MetalKit
 #if os(macOS)
 public struct Waveform : NSViewRepresentable {
 
-    var samples: [Float]
+    var samples: SampleBuffer
     var start: Int
     var length: Int
     var constants: Constants
 
-    public init(samples: [Float], start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
+    public init(samples: SampleBuffer, start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
         self.samples = samples
         self.constants = constants
         self.start = start
         if length > 0 {
-            self.length = min(length, (samples.count - start))
+            self.length = min(length, (samples.samples.count - start))
         } else {
-            self.length = samples.count - start
+            self.length = samples.samples.count - start
         }
-    }
-
-    public init(file: AVAudioFile, start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
-        let stereo = file.toFloatChannelData()!
-        self.init(samples: stereo[0], start: start, length: length, constants: constants)
     }
 
     public class Coordinator {
@@ -59,25 +54,20 @@ public struct Waveform : NSViewRepresentable {
 #else
 public struct Waveform : UIViewRepresentable {
 
-    var samples: [Float]
+    var samples: SampleBuffer
     var start: Int
     var length: Int
     var constants: Constants
 
-    public init(samples: [Float], start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
+    public init(samples: SampleBuffer, start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
         self.samples = samples
         self.constants = constants
         self.start = start
         if length > 0 {
             self.length = length
         } else {
-            self.length = samples.count
+            self.length = samples.samples.count
         }
-    }
-
-    public init(file: AVAudioFile, start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
-        let stereo = file.toFloatChannelData()!
-        self.init(samples: stereo[0], start: start, length: length, constants: constants)
     }
 
     public class Coordinator {

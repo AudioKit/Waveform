@@ -25,7 +25,7 @@ class Renderer: NSObject, MTKViewDelegate {
     var minBuffers: [MTLBuffer] = []
     var maxBuffers: [MTLBuffer] = []
 
-    var lastSamples: [Float] = []
+    var lastSamples = SampleBuffer(samples: [])
     var start = 0
     var length = 0
 
@@ -117,18 +117,20 @@ class Renderer: NSObject, MTKViewDelegate {
 
     }
 
-    func set(samples: [Float], start: Int, length: Int) {
+    func set(samples: SampleBuffer, start: Int, length: Int) {
         self.start = start
         self.length = length
-        guard samples != lastSamples else { return }
+        if samples === lastSamples {
+            return
+        }
         lastSamples = samples
         minBuffers.removeAll()
         maxBuffers.removeAll()
         
-        var minSamples = samples
-        var maxSamples = samples
+        var minSamples = samples.samples
+        var maxSamples = samples.samples
         
-        var s = samples.count
+        var s = samples.samples.count
         while s > 2 {
             print("samples: \(s)")
             minSamples = binMin(samples: minSamples, binSize: 2)
