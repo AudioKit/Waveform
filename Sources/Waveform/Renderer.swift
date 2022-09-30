@@ -38,7 +38,14 @@ class Renderer: NSObject, MTKViewDelegate {
         let rpd = MTLRenderPipelineDescriptor()
         rpd.vertexFunction = library.makeFunction(name: "waveform_vert")
         rpd.fragmentFunction = library.makeFunction(name: "waveform_frag")
-        rpd.colorAttachments[0].pixelFormat = .bgra8Unorm
+
+        let colorAttachment = rpd.colorAttachments[0]!
+        colorAttachment.pixelFormat = .bgra8Unorm
+        colorAttachment.isBlendingEnabled = true
+        colorAttachment.sourceRGBBlendFactor = .sourceAlpha
+        colorAttachment.sourceAlphaBlendFactor = .sourceAlpha
+        colorAttachment.destinationRGBBlendFactor = .oneMinusSourceAlpha
+        colorAttachment.destinationAlphaBlendFactor = .oneMinusSourceAlpha
 
         pipeline = try! device.makeRenderPipelineState(descriptor: rpd)
         
@@ -67,7 +74,7 @@ class Renderer: NSObject, MTKViewDelegate {
                 pass: MTLRenderPassDescriptor,
                 width: CGFloat) {
         
-        pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 1)
+        pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 0)
 
         let highestResolutionCount = Float(lastSamples.samples.count)
         let startFactor = Float(start) / highestResolutionCount

@@ -39,6 +39,7 @@ public struct Waveform : NSViewRepresentable {
         metalView.enableSetNeedsDisplay = true
         metalView.isPaused = true
         metalView.delegate = context.coordinator.renderer
+        metalView.layer?.isOpaque = false
         return metalView
     }
 
@@ -88,6 +89,7 @@ public struct Waveform : UIViewRepresentable {
         metalView.enableSetNeedsDisplay = true
         metalView.isPaused = true
         metalView.delegate = context.coordinator.renderer
+        metalView.layer.isOpaque = false
         return metalView
     }
 

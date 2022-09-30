@@ -86,6 +86,6 @@ fragment half4 waveform_frag(FragIn in   [[ stage_in ]],
     
     half s = sample_waveform(min_waveform, max_waveform, count, in.uv);
     
-    return {s,s,s,1.0};
+    return {1,1,1,s};
 
 }
