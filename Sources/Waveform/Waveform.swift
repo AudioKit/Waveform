@@ -53,8 +53,14 @@ public struct Waveform : UIViewRepresentable {
     var samples: [Float]
     var constants: Constants
 
-    public init(samples: [Float], constants: Constants) {
+    public init(samples: [Float], constants: Constants = Constants()) {
         self.samples = samples
+        self.constants = constants
+    }
+
+    public init(file: AVAudioFile, constants: Constants = Constants()) {
+        let stereo = file.toFloatChannelData()!
+        self.samples = stereo[0]
         self.constants = constants
     }
 
@@ -82,7 +88,7 @@ public struct Waveform : UIViewRepresentable {
     public func updateUIView(_ uiView: UIViewType, context: Context) {
         let renderer = context.coordinator.renderer
         renderer.constants = constants
-        renderer.set(samples: samples, binSize: Int(CGFloat(samples.count) / uiView.frame.width))
+        renderer.set(samples: samples)
         uiView.setNeedsDisplay()
     }
 
