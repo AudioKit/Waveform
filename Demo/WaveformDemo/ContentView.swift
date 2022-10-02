@@ -69,7 +69,7 @@ struct ContentView: View {
                                 .gesture(DragGesture()
                                     .updating($dragLength) { drag, dragLength, _ in
                                         print("x")
-                                        dragLength = drag.location.x - drag.startLocation.x
+                                        dragLength = (drag.location.x - drag.startLocation.x) / gp.size.width
                                     }
                                     .onEnded { drag in
                                         length += (drag.location.x - drag.startLocation.x) / gp.size.width
@@ -87,7 +87,7 @@ struct ContentView: View {
                 }
             }
             .frame(height: 100)
-            Waveform(samples: model.samples, start: Int(max(0, (start + dragStart)) * Double(model.samples.count)), length: Int(length * Double(model.samples.count)))
+            Waveform(samples: model.samples, start: Int(max(0, (start + dragStart)) * Double(model.samples.count)), length: Int(min(1, (length + dragLength)) * Double(model.samples.count)))
 
             HStack {
                 Slider(value: $start)
