@@ -31,8 +31,9 @@ struct ContentView: View {
     @StateObject var model = WaveformDemoModel(file: getFile())
 
     @State var start = 0.0
-    @State var newOffset = 0.0
-    @State var length = 100000.0
+    @GestureState var dragStart = 0.0
+    @State var length = 1.0
+    @GestureState var dragLength = 0.0
 
     let formatter = NumberFormatter()
     var body: some View {
@@ -41,32 +42,56 @@ struct ContentView: View {
             GeometryReader { gp in
                 ZStack(alignment: .leading) {
                     Waveform(samples: model.samples)
-                    RoundedRectangle(cornerRadius: 10)
-                        .frame(width: min(gp.size.width * length / Double(model.samples.count),
-                                          gp.size.width - max(0, start * (gp.size.width / Double(model.samples.count))  + newOffset)))
-                        .offset(x: max(0, start * (gp.size.width / Double(model.samples.count))  + newOffset))
-                        .opacity(0.5)
-                        .gesture(DragGesture()
-                            .onChanged { drag in
-                                newOffset = drag.location.x - drag.startLocation.x
-                            }
-                            .onEnded { _ in
-                                start += newOffset / (gp.size.width / Double(model.samples.count))
-                                if start < 0 {
-                                    start = 0.0
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .frame(width: min(gp.size.width * length,
+                                              gp.size.width - max(0, start * gp.size.width + dragStart)))
+                            .offset(x: max(0, start * gp.size.width + dragStart))
+                            .opacity(0.5)
+                            .gesture(DragGesture()
+                                .updating($dragStart) { drag, dragStart, _ in
+                                    dragStart = drag.location.x - drag.startLocation.x
                                 }
-                                newOffset = 0.0
-                            }
+                                .onEnded { drag in
+                                    start += (drag.location.x - drag.startLocation.x) / gp.size.width
+                                    if start < 0 {
+                                        start = 0.0
+                                    }
+                                }
 
-                        )
+                            )
+                        HStack {
+                            Spacer()
+                            RoundedRectangle(cornerRadius: 10)
+                                .foregroundColor(.black)
+                                .frame(width: 10).opacity(0.3)
+                                .padding(10)
+                                .gesture(DragGesture()
+                                    .updating($dragLength) { drag, dragLength, _ in
+                                        print("x")
+                                        dragLength = drag.location.x - drag.startLocation.x
+                                    }
+                                    .onEnded { drag in
+                                        length += (drag.location.x - drag.startLocation.x) / gp.size.width
+                                        if length < 0.01 {
+                                            length = 0.01
+                                        }
+                                    }
+
+                                )
+                        }
+                        .frame(width: min(gp.size.width * length,
+                                          gp.size.width - max(0, start * gp.size.width + dragStart)))
+                        .offset(x: max(0, start * gp.size.width + dragStart))
+                    }
                 }
             }
             .frame(height: 100)
-            Waveform(samples: model.samples, start: Int(start), length: Int(length))
+            Waveform(samples: model.samples, start: Int(start * Double(model.samples.count)), length: Int(length * Double(model.samples.count)))
 
             HStack {
-                Slider(value: $start, in: 0...Double(model.samples.count-1))
-                Slider(value: $length, in: 0...Double(model.samples.count-1))
+                Slider(value: $start)
+                Slider(value: $length)
             }
 
         }
