@@ -52,6 +52,7 @@ struct ContentView: View {
                                     if start > 1 {
                                         start = 1
                                     }
+                                    length = min(length, 1 - start)
                                 }
 
                             )
@@ -67,6 +68,7 @@ struct ContentView: View {
                                 .onEnded { drag in
                                     length += (drag.location.x - drag.startLocation.x) / gp.size.width
                                     if length < 0 {
+                                        print("resetting length")
                                         length = 1
                                     }
                                 }
@@ -78,8 +80,8 @@ struct ContentView: View {
             }
             .frame(height: 100)
             Waveform(samples: model.samples,
-                     start: Int(max(0, (start + dragStart)) * Double(model.samples.count)),
-                     length: Int(max(0, min(1, (length + dragLength)) * Double(model.samples.count))))
+                     start: Int(max(0, min(1,(start + dragStart))) * Double(model.samples.count)),
+                     length: Int(max(0, min(1, (length + dragLength))) * Double(model.samples.count)))
         }
         .padding()
     }
