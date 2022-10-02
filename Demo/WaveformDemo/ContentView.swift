@@ -5,16 +5,6 @@ import Waveform
 class WaveformDemoModel: ObservableObject {
     var samples: SampleBuffer
 
-    init() {
-        var s: [Float] = []
-        let size = 44100
-        for i in 0..<size {
-            let sine = sin(Float(i * 2) * .pi / Float(size)) * 0.9
-            s.append(sine + 0.1 * Float.random(in: -1...1))
-        }
-        samples = SampleBuffer(samples: s)
-    }
-
     init(file: AVAudioFile) {
         let stereo = file.toFloatChannelData()!
         samples = SampleBuffer(samples: stereo[0])
@@ -46,7 +36,7 @@ struct ContentView: View {
                     Waveform(samples: model.samples)
                     ZStack(alignment: .leading)  {
                         RoundedRectangle(cornerRadius: indicatorSize)
-                            .frame(width: max(30, min(gp.size.width * (length + dragLength),
+                            .frame(width: max(3 * indicatorSize, min(gp.size.width * (length + dragLength),
                                               gp.size.width - min(1, max(0, (start + dragStart))) * gp.size.width)))
                             .offset(x: min(gp.size.width - 3 * indicatorSize, min(1, max(0, (start + dragStart))) * gp.size.width))
                             .opacity(0.5)
@@ -88,8 +78,8 @@ struct ContentView: View {
             }
             .frame(height: 100)
             Waveform(samples: model.samples,
-                     start: Int(max(0, (start + dragStart)) * Double(model.samples.count - 1)),
-                     length: Int(max(0, min(1, (length + dragLength)) * Double(model.samples.count - 1))))
+                     start: Int(max(0, (start + dragStart)) * Double(model.samples.count)),
+                     length: Int(max(0, min(1, (length + dragLength)) * Double(model.samples.count))))
         }
         .padding()
     }
