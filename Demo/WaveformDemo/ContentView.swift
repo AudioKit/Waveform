@@ -42,9 +42,9 @@ struct ContentView: View {
             GeometryReader { gp in
                 ZStack(alignment: .leading) {
                     Waveform(samples: model.samples)
-                    ZStack {
+                    ZStack(alignment: .leading)  {
                         RoundedRectangle(cornerRadius: 10)
-                            .frame(width: min(gp.size.width * length,
+                            .frame(width: min(gp.size.width * (length + dragLength),
                                               gp.size.width - max(0, (start + dragStart) * gp.size.width)))
                             .offset(x: max(0, (start + dragStart) * gp.size.width))
                             .opacity(0.5)
@@ -60,29 +60,24 @@ struct ContentView: View {
                                 }
 
                             )
-                        HStack {
-                            Spacer()
-                            RoundedRectangle(cornerRadius: 10)
-                                .foregroundColor(.black)
-                                .frame(width: 10).opacity(0.3)
-                                .padding(10)
-                                .gesture(DragGesture()
-                                    .updating($dragLength) { drag, dragLength, _ in
-                                        print("x")
-                                        dragLength = (drag.location.x - drag.startLocation.x) / gp.size.width
+                        RoundedRectangle(cornerRadius: 10)
+                            .foregroundColor(.black)
+                            .frame(width: 10).opacity(0.3)
+                            .offset(x: max(0, (start + dragStart + length + dragLength) * gp.size.width - 30))
+                            .padding(10)
+                            .gesture(DragGesture()
+                                .updating($dragLength) { drag, dragLength, _ in
+                                    dragLength = (drag.location.x - drag.startLocation.x) / gp.size.width
+                                }
+                                .onEnded { drag in
+                                    length += (drag.location.x - drag.startLocation.x) / gp.size.width
+                                    if length < 0.01 {
+                                        length = 0.01
                                     }
-                                    .onEnded { drag in
-                                        length += (drag.location.x - drag.startLocation.x) / gp.size.width
-                                        if length < 0.01 {
-                                            length = 0.01
-                                        }
-                                    }
+                                }
 
-                                )
-                        }
-                        .frame(width: min(gp.size.width * length,
-                                          gp.size.width - max(0, (start + dragStart) * gp.size.width)))
-                        .offset(x: max(0, (start + dragStart) * gp.size.width))
+                            )
+
                     }
                 }
             }
