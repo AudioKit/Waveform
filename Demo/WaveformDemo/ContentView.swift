@@ -45,8 +45,8 @@ struct ContentView: View {
                     ZStack(alignment: .leading)  {
                         RoundedRectangle(cornerRadius: 10)
                             .frame(width: min(gp.size.width * (length + dragLength),
-                                              gp.size.width - max(0, (start + dragStart) * gp.size.width)))
-                            .offset(x: max(0, (start + dragStart) * gp.size.width))
+                                              gp.size.width - min(1, max(0, (start + dragStart))) * gp.size.width))
+                            .offset(x: min(1, max(0, (start + dragStart))) * gp.size.width)
                             .opacity(0.5)
                             .gesture(DragGesture()
                                 .updating($dragStart) { drag, dragStart, _ in
@@ -57,13 +57,16 @@ struct ContentView: View {
                                     if start < 0 {
                                         start = 0.0
                                     }
+                                    if start > 1 {
+                                        start = 1
+                                    }
                                 }
 
                             )
                         RoundedRectangle(cornerRadius: 10)
                             .foregroundColor(.black)
                             .frame(width: 10).opacity(0.3)
-                            .offset(x: max(0, (start + dragStart + length + dragLength) * gp.size.width - 30))
+                            .offset(x: min(1, max(0, start + dragStart) + length + dragLength) * gp.size.width - 30)
                             .padding(10)
                             .gesture(DragGesture()
                                 .updating($dragLength) { drag, dragLength, _ in
@@ -71,8 +74,8 @@ struct ContentView: View {
                                 }
                                 .onEnded { drag in
                                     length += (drag.location.x - drag.startLocation.x) / gp.size.width
-                                    if length < 0.01 {
-                                        length = 0.01
+                                    if length < 0 {
+                                        length = 1
                                     }
                                 }
 
@@ -83,12 +86,6 @@ struct ContentView: View {
             }
             .frame(height: 100)
             Waveform(samples: model.samples, start: Int(max(0, (start + dragStart)) * Double(model.samples.count)), length: Int(min(1, (length + dragLength)) * Double(model.samples.count)))
-
-            HStack {
-                Slider(value: $start)
-                Slider(value: $length)
-            }
-
         }
         .padding()
     }
