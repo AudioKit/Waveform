@@ -45,12 +45,12 @@ struct ContentView: View {
                     ZStack {
                         RoundedRectangle(cornerRadius: 10)
                             .frame(width: min(gp.size.width * length,
-                                              gp.size.width - max(0, start * gp.size.width + dragStart)))
-                            .offset(x: max(0, start * gp.size.width + dragStart))
+                                              gp.size.width - max(0, (start + dragStart) * gp.size.width)))
+                            .offset(x: max(0, (start + dragStart) * gp.size.width))
                             .opacity(0.5)
                             .gesture(DragGesture()
                                 .updating($dragStart) { drag, dragStart, _ in
-                                    dragStart = drag.location.x - drag.startLocation.x
+                                    dragStart = (drag.location.x - drag.startLocation.x) / gp.size.width
                                 }
                                 .onEnded { drag in
                                     start += (drag.location.x - drag.startLocation.x) / gp.size.width
@@ -81,13 +81,13 @@ struct ContentView: View {
                                 )
                         }
                         .frame(width: min(gp.size.width * length,
-                                          gp.size.width - max(0, start * gp.size.width + dragStart)))
-                        .offset(x: max(0, start * gp.size.width + dragStart))
+                                          gp.size.width - max(0, (start + dragStart) * gp.size.width)))
+                        .offset(x: max(0, (start + dragStart) * gp.size.width))
                     }
                 }
             }
             .frame(height: 100)
-            Waveform(samples: model.samples, start: Int(start * Double(model.samples.count)), length: Int(length * Double(model.samples.count)))
+            Waveform(samples: model.samples, start: Int(max(0, (start + dragStart)) * Double(model.samples.count)), length: Int(length * Double(model.samples.count)))
 
             HStack {
                 Slider(value: $start)
