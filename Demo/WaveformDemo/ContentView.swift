@@ -35,6 +35,8 @@ struct ContentView: View {
     @State var length = 1.0
     @GestureState var dragLength = 0.0
 
+    let indicatorSize = 10.0
+
     let formatter = NumberFormatter()
     var body: some View {
         VStack {
@@ -43,10 +45,10 @@ struct ContentView: View {
                 ZStack(alignment: .leading) {
                     Waveform(samples: model.samples)
                     ZStack(alignment: .leading)  {
-                        RoundedRectangle(cornerRadius: 10)
-                            .frame(width: min(gp.size.width * (length + dragLength),
-                                              gp.size.width - min(1, max(0, (start + dragStart))) * gp.size.width))
-                            .offset(x: min(1, max(0, (start + dragStart))) * gp.size.width)
+                        RoundedRectangle(cornerRadius: indicatorSize)
+                            .frame(width: max(30, min(gp.size.width * (length + dragLength),
+                                              gp.size.width - min(1, max(0, (start + dragStart))) * gp.size.width)))
+                            .offset(x: min(gp.size.width - 3 * indicatorSize, min(1, max(0, (start + dragStart))) * gp.size.width))
                             .opacity(0.5)
                             .gesture(DragGesture()
                                 .updating($dragStart) { drag, dragStart, _ in
@@ -63,11 +65,11 @@ struct ContentView: View {
                                 }
 
                             )
-                        RoundedRectangle(cornerRadius: 10)
+                        RoundedRectangle(cornerRadius: indicatorSize)
                             .foregroundColor(.black)
-                            .frame(width: 10).opacity(0.3)
-                            .offset(x: min(1, max(0, start + dragStart) + length + dragLength) * gp.size.width - 30)
-                            .padding(10)
+                            .frame(width: indicatorSize).opacity(0.3)
+                            .offset(x: max(0, min(1, max(0, start + dragStart) + length + dragLength) * gp.size.width - 3 * indicatorSize))
+                            .padding(indicatorSize)
                             .gesture(DragGesture()
                                 .updating($dragLength) { drag, dragLength, _ in
                                     dragLength = (drag.location.x - drag.startLocation.x) / gp.size.width
@@ -85,7 +87,9 @@ struct ContentView: View {
                 }
             }
             .frame(height: 100)
-            Waveform(samples: model.samples, start: Int(max(0, (start + dragStart)) * Double(model.samples.count)), length: Int(min(1, (length + dragLength)) * Double(model.samples.count)))
+            Waveform(samples: model.samples,
+                     start: Int(max(0, (start + dragStart)) * Double(model.samples.count - 1)),
+                     length: Int(max(0, min(1, (length + dragLength)) * Double(model.samples.count - 1))))
         }
         .padding()
     }
