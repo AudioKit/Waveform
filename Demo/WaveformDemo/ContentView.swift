@@ -80,7 +80,7 @@ struct ContentView: View {
             }
             .frame(height: 100)
             Waveform(samples: model.samples,
-                     start: Int(max(0, min(1,(start + dragStart))) * Double(model.samples.count)),
+                     start: Int(max(0, min(1,(start + dragStart))) * Double(model.samples.count - 1)),
                      length: Int(max(0, min(1, (length + dragLength))) * Double(model.samples.count)))
         }
         .padding()
