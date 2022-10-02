@@ -31,11 +31,37 @@ struct ContentView: View {
     @StateObject var model = WaveformDemoModel(file: getFile())
 
     @State var start = 0.0
-    @State var length = 0.0
+    @State var newOffset = 0.0
+    @State var length = 100000.0
+
     let formatter = NumberFormatter()
     var body: some View {
         VStack {
 
+            GeometryReader { gp in
+                ZStack(alignment: .leading) {
+                    Waveform(samples: model.samples)
+                    RoundedRectangle(cornerRadius: 10)
+                        .frame(width: min(gp.size.width * length / Double(model.samples.count),
+                                          gp.size.width - max(0, start * (gp.size.width / Double(model.samples.count))  + newOffset)))
+                        .offset(x: max(0, start * (gp.size.width / Double(model.samples.count))  + newOffset))
+                        .opacity(0.5)
+                        .gesture(DragGesture()
+                            .onChanged { drag in
+                                newOffset = drag.location.x - drag.startLocation.x
+                            }
+                            .onEnded { _ in
+                                start += newOffset / (gp.size.width / Double(model.samples.count))
+                                if start < 0 {
+                                    start = 0.0
+                                }
+                                newOffset = 0.0
+                            }
+
+                        )
+                }
+            }
+            .frame(height: 100)
             Waveform(samples: model.samples, start: Int(start), length: Int(length))
 
             HStack {
