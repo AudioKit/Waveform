@@ -33,9 +33,8 @@ struct MinimapView: View {
     var body: some View {
         GeometryReader { gp in
             RoundedRectangle(cornerRadius: indicatorSize)
-                .frame(width: max(3 * indicatorSize, min(gp.size.width * length,
-                                                         gp.size.width - start * gp.size.width)))
-                .offset(x: min(gp.size.width - 3 * indicatorSize, start) * gp.size.width)
+                .frame(width: length * gp.size.width)
+                .offset(x: start * gp.size.width)
                 .opacity(0.5)
                 .gesture(DragGesture()
                     .updating($initialStart) { drag, state, _ in
@@ -52,9 +51,9 @@ struct MinimapView: View {
                 )
             
             RoundedRectangle(cornerRadius: indicatorSize)
-                .foregroundColor(.black)
+                .foregroundColor(.white)
                 .frame(width: indicatorSize).opacity(0.3)
-                .offset(x: max(0, start+length) * gp.size.width - 3 * indicatorSize)
+                .offset(x: (start+length) * gp.size.width)
                 .padding(indicatorSize)
                 .gesture(DragGesture()
                     .updating($initialLength) { drag, state, _ in
@@ -88,6 +87,7 @@ struct ContentView: View {
                 MinimapView(start: $start, length: $length)
             }
             .frame(height: 100)
+            .padding()
             Waveform(samples: model.samples,
                      start: Int(start * Double(model.samples.count - 1)),
                      length: Int(length * Double(model.samples.count)))
