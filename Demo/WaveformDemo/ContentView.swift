@@ -25,55 +25,49 @@ struct MinimapView: View {
     @Binding var start: Double
     @Binding var length: Double
     
-    @GestureState var dragStart = 0.0
-    @GestureState var dragLength = 0.0
+    @GestureState var initialStart: Double?
+    @GestureState var initialLength: Double?
     
     let indicatorSize = 10.0
-    
-    var finalStart: Double {
-        clamp(start + dragStart, 0, 1)
-    }
-    
-    var finalLength: Double {
-        length + dragLength
-    }
     
     var body: some View {
         GeometryReader { gp in
             RoundedRectangle(cornerRadius: indicatorSize)
-                .frame(width: max(3 * indicatorSize, min(gp.size.width * finalLength,
-                                                         gp.size.width - finalStart * gp.size.width)))
-                .offset(x: min(gp.size.width - 3 * indicatorSize, finalStart) * gp.size.width)
+                .frame(width: max(3 * indicatorSize, min(gp.size.width * length,
+                                                         gp.size.width - start * gp.size.width)))
+                .offset(x: min(gp.size.width - 3 * indicatorSize, start) * gp.size.width)
                 .opacity(0.5)
                 .gesture(DragGesture()
-                    .updating($dragStart) { drag, dragStart, _ in
-                        dragStart = drag.translation.width / gp.size.width
+                    .updating($initialStart) { drag, state, _ in
+                        if state == nil {
+                            state = start
+                        }
                     }
-                    .onEnded { drag in
-                        start += drag.translation.width / gp.size.width
-                        start = clamp(start, 0, 1)
-                        length = min(length, 1 - start)
+                    .onChanged { drag in
+                        if let initialStart = initialStart {
+                            start = clamp(initialStart + drag.translation.width / gp.size.width, 0, 1)
+                            length = min(length, 1 - start)
+                        }
                     }
-                         
                 )
             
             RoundedRectangle(cornerRadius: indicatorSize)
                 .foregroundColor(.black)
                 .frame(width: indicatorSize).opacity(0.3)
-                .offset(x: max(0, finalStart + finalLength) * gp.size.width - 3 * indicatorSize)
+                .offset(x: max(0, start+length) * gp.size.width - 3 * indicatorSize)
                 .padding(indicatorSize)
                 .gesture(DragGesture()
-                    .updating($dragLength) { drag, dragLength, _ in
-                        dragLength = drag.translation.width / gp.size.width
-                    }
-                    .onEnded { drag in
-                        length += drag.translation.width / gp.size.width
-                        if length < 0 {
-                            print("resetting length")
-                            length = 1
+                    .updating($initialLength) { drag, state, _ in
+                        if state == nil {
+                            state = length
                         }
                     }
-                         
+                    .onChanged { drag in
+                        if let initialLength = initialLength {
+                            length = initialLength + drag.translation.width / gp.size.width
+                        }
+                    }
+
                 )
         }
     }
