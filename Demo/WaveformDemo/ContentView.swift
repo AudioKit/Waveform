@@ -16,6 +16,10 @@ func getFile() -> AVAudioFile {
     return try! AVAudioFile(forReading: url)
 }
 
+func clamp(_ x: Double, _ inf: Double, _ sup: Double) -> Double {
+    max(min(x, sup), inf)
+}
+
 struct ContentView: View {
 
     @StateObject var model = WaveformDemoModel(file: getFile())
@@ -26,6 +30,14 @@ struct ContentView: View {
     @GestureState var dragLength = 0.0
 
     let indicatorSize = 10.0
+    
+    var finalStart: Double {
+        clamp(start + dragStart, 0, 1)
+    }
+    
+    var finalLength: Double {
+        length + dragLength
+    }
 
     let formatter = NumberFormatter()
     var body: some View {
@@ -35,9 +47,9 @@ struct ContentView: View {
                 ZStack(alignment: .leading) {
                     Waveform(samples: model.samples)
                     RoundedRectangle(cornerRadius: indicatorSize)
-                        .frame(width: max(3 * indicatorSize, min(gp.size.width * (length + dragLength),
-                                                                 gp.size.width - min(1, max(0, (start + dragStart))) * gp.size.width)))
-                        .offset(x: min(gp.size.width - 3 * indicatorSize, min(1, max(0, (start + dragStart))) * gp.size.width))
+                        .frame(width: max(3 * indicatorSize, min(gp.size.width * finalLength,
+                                                                 gp.size.width - finalStart * gp.size.width)))
+                        .offset(x: min(gp.size.width - 3 * indicatorSize, finalStart) * gp.size.width)
                         .opacity(0.5)
                         .gesture(DragGesture()
                             .updating($dragStart) { drag, dragStart, _ in
@@ -45,12 +57,7 @@ struct ContentView: View {
                             }
                             .onEnded { drag in
                                 start += (drag.location.x - drag.startLocation.x) / gp.size.width
-                                if start < 0 {
-                                    start = 0.0
-                                }
-                                if start > 1 {
-                                    start = 1
-                                }
+                                start = clamp(start, 0, 1)
                                 length = min(length, 1 - start)
                             }
                                  
