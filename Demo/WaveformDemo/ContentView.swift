@@ -44,8 +44,7 @@ struct MinimapView: View {
                     }
                     .onChanged { drag in
                         if let initialStart = initialStart {
-                            start = clamp(initialStart + drag.translation.width / gp.size.width, 0, 1)
-                            length = min(length, 1 - start)
+                            start = clamp(initialStart + drag.translation.width / gp.size.width, 0, 1-length)
                         }
                     }
                 )
