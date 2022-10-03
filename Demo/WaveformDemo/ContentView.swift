@@ -34,48 +34,46 @@ struct ContentView: View {
             GeometryReader { gp in
                 ZStack(alignment: .leading) {
                     Waveform(samples: model.samples)
-                    ZStack(alignment: .leading)  {
-                        RoundedRectangle(cornerRadius: indicatorSize)
-                            .frame(width: max(3 * indicatorSize, min(gp.size.width * (length + dragLength),
-                                              gp.size.width - min(1, max(0, (start + dragStart))) * gp.size.width)))
-                            .offset(x: min(gp.size.width - 3 * indicatorSize, min(1, max(0, (start + dragStart))) * gp.size.width))
-                            .opacity(0.5)
-                            .gesture(DragGesture()
-                                .updating($dragStart) { drag, dragStart, _ in
-                                    dragStart = (drag.location.x - drag.startLocation.x) / gp.size.width
+                    RoundedRectangle(cornerRadius: indicatorSize)
+                        .frame(width: max(3 * indicatorSize, min(gp.size.width * (length + dragLength),
+                                                                 gp.size.width - min(1, max(0, (start + dragStart))) * gp.size.width)))
+                        .offset(x: min(gp.size.width - 3 * indicatorSize, min(1, max(0, (start + dragStart))) * gp.size.width))
+                        .opacity(0.5)
+                        .gesture(DragGesture()
+                            .updating($dragStart) { drag, dragStart, _ in
+                                dragStart = (drag.location.x - drag.startLocation.x) / gp.size.width
+                            }
+                            .onEnded { drag in
+                                start += (drag.location.x - drag.startLocation.x) / gp.size.width
+                                if start < 0 {
+                                    start = 0.0
                                 }
-                                .onEnded { drag in
-                                    start += (drag.location.x - drag.startLocation.x) / gp.size.width
-                                    if start < 0 {
-                                        start = 0.0
-                                    }
-                                    if start > 1 {
-                                        start = 1
-                                    }
-                                    length = min(length, 1 - start)
+                                if start > 1 {
+                                    start = 1
                                 }
-
-                            )
-                        RoundedRectangle(cornerRadius: indicatorSize)
-                            .foregroundColor(.black)
-                            .frame(width: indicatorSize).opacity(0.3)
-                            .offset(x: max(0, min(1, max(0, start + dragStart) + length + dragLength) * gp.size.width - 3 * indicatorSize))
-                            .padding(indicatorSize)
-                            .gesture(DragGesture()
-                                .updating($dragLength) { drag, dragLength, _ in
-                                    dragLength = (drag.location.x - drag.startLocation.x) / gp.size.width
+                                length = min(length, 1 - start)
+                            }
+                                 
+                        )
+                    RoundedRectangle(cornerRadius: indicatorSize)
+                        .foregroundColor(.black)
+                        .frame(width: indicatorSize).opacity(0.3)
+                        .offset(x: max(0, min(1, max(0, start + dragStart) + length + dragLength) * gp.size.width - 3 * indicatorSize))
+                        .padding(indicatorSize)
+                        .gesture(DragGesture()
+                            .updating($dragLength) { drag, dragLength, _ in
+                                dragLength = (drag.location.x - drag.startLocation.x) / gp.size.width
+                            }
+                            .onEnded { drag in
+                                length += (drag.location.x - drag.startLocation.x) / gp.size.width
+                                if length < 0 {
+                                    print("resetting length")
+                                    length = 1
                                 }
-                                .onEnded { drag in
-                                    length += (drag.location.x - drag.startLocation.x) / gp.size.width
-                                    if length < 0 {
-                                        print("resetting length")
-                                        length = 1
-                                    }
-                                }
-
-                            )
-
-                    }
+                            }
+                                 
+                        )
+                    
                 }
             }
             .frame(height: 100)
