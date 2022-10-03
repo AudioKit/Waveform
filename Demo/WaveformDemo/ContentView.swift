@@ -65,7 +65,7 @@ struct ContentView: View {
                     RoundedRectangle(cornerRadius: indicatorSize)
                         .foregroundColor(.black)
                         .frame(width: indicatorSize).opacity(0.3)
-                        .offset(x: max(0, min(1, max(0, start + dragStart) + length + dragLength) * gp.size.width - 3 * indicatorSize))
+                        .offset(x: max(0, finalStart + finalLength) * gp.size.width - 3 * indicatorSize)
                         .padding(indicatorSize)
                         .gesture(DragGesture()
                             .updating($dragLength) { drag, dragLength, _ in
