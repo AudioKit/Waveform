@@ -47,10 +47,10 @@ struct MinimapView: View {
                 .opacity(0.5)
                 .gesture(DragGesture()
                     .updating($dragStart) { drag, dragStart, _ in
-                        dragStart = (drag.location.x - drag.startLocation.x) / gp.size.width
+                        dragStart = drag.translation.width / gp.size.width
                     }
                     .onEnded { drag in
-                        start += (drag.location.x - drag.startLocation.x) / gp.size.width
+                        start += drag.translation.width / gp.size.width
                         start = clamp(start, 0, 1)
                         length = min(length, 1 - start)
                     }
@@ -64,10 +64,10 @@ struct MinimapView: View {
                 .padding(indicatorSize)
                 .gesture(DragGesture()
                     .updating($dragLength) { drag, dragLength, _ in
-                        dragLength = (drag.location.x - drag.startLocation.x) / gp.size.width
+                        dragLength = drag.translation.width / gp.size.width
                     }
                     .onEnded { drag in
-                        length += (drag.location.x - drag.startLocation.x) / gp.size.width
+                        length += drag.translation.width / gp.size.width
                         if length < 0 {
                             print("resetting length")
                             length = 1
