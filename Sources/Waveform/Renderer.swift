@@ -3,11 +3,16 @@
 import Foundation
 import Metal
 import MetalKit
+import SwiftUI
 
 let MaxBuffers = 3
 
 public struct Constants {
-    public init() {}
+    public var color: Color
+
+    public init(color: Color = .white) {
+        self.color = color
+    }
 }
 
 class Renderer: NSObject, MTKViewDelegate {
