@@ -8,15 +8,6 @@ on:
     branches: [main]
 
 jobs:
-  # Run swift test across all applicable platforms and versions.
-  swift_test:
-    name: Test
-    uses: AudioKit/ci/.github/workflows/swift_test.yml@main
-    with:
-      scheme: Waveform
-      platforms: iOS macOS
-      swift-versions: 5.5 5.6
-
   # Build the demo projects.
   build_demo:
     name: Build ${{ matrix.scheme }} (Xcode ${{ matrix.xcode_version }})
