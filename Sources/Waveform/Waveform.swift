@@ -10,7 +10,8 @@ public struct Waveform: NSViewRepresentable {
     var samples: SampleBuffer
     var start: Int
     var length: Int
-    var constants: Constants
+    var constants: Constants = Constants()
+
 
     /// Initialize the waveform
     /// - Parameters:
@@ -18,9 +19,8 @@ public struct Waveform: NSViewRepresentable {
     ///   - start: Which sample on which to start displaying samples
     ///   - length: The width of the entire waveform in samples
     ///   - constants: Look and feel parameters for the waveform
-    public init(samples: SampleBuffer, start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
+    public init(samples: SampleBuffer, start: Int = 0, length: Int = 0) {
         self.samples = samples
-        self.constants = constants
         self.start = start
         if length > 0 {
             self.length = min(length, samples.samples.count - start)
@@ -126,3 +126,13 @@ public struct Waveform: UIViewRepresentable {
     }
 }
 #endif
+
+extension Waveform {
+    /// Modifer to change the foreground color of the wheel
+    /// - Parameter foregroundColor: foreground color
+    public func foregroundColor(_ foregroundColor: Color) -> Waveform {
+        var copy = self
+        copy.constants = Constants(color: foregroundColor)
+        return copy
+    }
+}
