@@ -9,12 +9,13 @@ import MetalKit
 import XCTest
 
 final class WaveformTests: XCTestCase {
-    let device = MTLCreateSystemDefaultDevice()!
+    let device = MTLCreateSystemDefaultDevice()
     var queue: MTLCommandQueue!
     var texture: MTLTexture!
     var pass: MTLRenderPassDescriptor!
 
     override func setUp() {
+        guard let device = device else { return }
         queue = device.makeCommandQueue()!
 
         let w = 512
@@ -51,6 +52,7 @@ final class WaveformTests: XCTestCase {
     }
 
     func render(samples: [Float]) {
+        guard let device = device else { return }
         let renderer = Renderer(device: device)
 
         renderer.set(samples: SampleBuffer(samples: samples), start: 0, length: samples.count)
