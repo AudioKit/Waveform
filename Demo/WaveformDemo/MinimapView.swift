@@ -18,7 +18,7 @@ struct MinimapView: View {
             RoundedRectangle(cornerRadius: indicatorSize)
                 .frame(width: length * gp.size.width)
                 .offset(x: start * gp.size.width)
-                .opacity(0.2)
+                .opacity(0.3)
                 .gesture(DragGesture()
                     .updating($initialStart) { _, state, _ in
                         if state == nil {
@@ -34,7 +34,7 @@ struct MinimapView: View {
 
             RoundedRectangle(cornerRadius: indicatorSize)
                 .foregroundColor(.white)
-                .frame(width: indicatorSize).opacity(0.2)
+                .frame(width: indicatorSize).opacity(0.3)
                 .offset(x: (start + length) * gp.size.width)
                 .padding(indicatorSize)
                 .gesture(DragGesture()

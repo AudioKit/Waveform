@@ -33,6 +33,7 @@ struct ContentView: View {
         VStack {
             ZStack(alignment: .leading) {
                 Waveform(samples: model.samples).foregroundColor(.cyan)
+                    .padding(.vertical, 5)
                 MinimapView(start: $start, length: $length)
             }
             .frame(height: 100)
