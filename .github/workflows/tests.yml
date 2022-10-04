@@ -28,9 +28,6 @@ jobs:
       # Setting 'fail-fast' to 'true' implies the build will fail the first time it encounters an error.
       fail-fast: true
       matrix:
-        scheme:
-          - WaveformDemo (iOS)
-          - WaveformDemo (macOS)
         xcode_version:
           - '13.2' # swift 5.5
           - '13.4' # swift 5.6
@@ -39,7 +36,7 @@ jobs:
         uses: AudioKit/ci/.github/actions/build-demo@main
         with:
           project: Demo/WaveformDemo.xcodeproj
-          scheme: ${{ matrix.scheme }}
+          scheme: ${{ 'WaveformDemo' }}
           xcode_version: ${{ matrix.xcode_version }}
 
   # Send notification to Discord on failure.
