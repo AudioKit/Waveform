@@ -26,7 +26,7 @@ jobs:
     needs: [swift_test]
     strategy:
       # Setting 'fail-fast' to 'true' implies the build will fail the first time it encounters an error.
-      fail-fast: true
+      fail-fast: false
       matrix:
         xcode_version:
           - '13.2' # swift 5.5
