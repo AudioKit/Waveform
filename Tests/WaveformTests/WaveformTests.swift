@@ -1,19 +1,18 @@
-import XCTest
-@testable import Waveform
 import AVFoundation
-import Metal
-import MetalKit
 import CoreFoundation
 import CoreGraphics
+import Metal
+import MetalKit
+@testable import Waveform
+import XCTest
 
 final class WaveformTests: XCTestCase {
     let device = MTLCreateSystemDefaultDevice()!
     var queue: MTLCommandQueue!
     var texture: MTLTexture!
     var pass: MTLRenderPassDescriptor!
-    
+
     override func setUp() {
-        
         queue = device.makeCommandQueue()!
 
         let w = 512
@@ -34,7 +33,7 @@ final class WaveformTests: XCTestCase {
         pass.colorAttachments[0].storeAction = .store
         pass.colorAttachments[0].loadAction = .clear
     }
-    
+
     func writeCGImage(image: CGImage, url: CFURL) {
         #if os(macOS)
         let dest = CGImageDestinationCreateWithURL(url, kUTTypePNG, 1, nil)!
@@ -42,7 +41,7 @@ final class WaveformTests: XCTestCase {
         assert(CGImageDestinationFinalize(dest))
         #endif
     }
-    
+
     func showTexture(texture: MTLTexture, name: String) {
         let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent(name)
         print("saving to \(tmpURL)")
@@ -50,9 +49,8 @@ final class WaveformTests: XCTestCase {
     }
 
     func render(samples: [Float]) {
-
         let renderer = Renderer(device: device)
-        
+
         renderer.set(samples: SampleBuffer(samples: samples), start: 0, length: samples.count)
 
         let commandBuffer = queue.makeCommandBuffer()!
@@ -70,20 +68,18 @@ final class WaveformTests: XCTestCase {
         XCTAssertFalse(texture.isBlack)
 
         showTexture(texture: texture, name: "Waveform.png")
-
     }
-    
+
     func testRenderBeat() throws {
         guard let url = Bundle.module.url(forResource: "beat", withExtension: "aiff") else {
             XCTFail()
             return
         }
-        
+
         let file = try! AVAudioFile(forReading: url)
-        
+
         let stereo = file.toFloatChannelData()!
 
         render(samples: stereo[0])
-
     }
 }

@@ -1,10 +1,9 @@
 import AVFoundation
-import SwiftUI
 import MetalKit
+import SwiftUI
 
 #if os(macOS)
-public struct Waveform : NSViewRepresentable {
-
+public struct Waveform: NSViewRepresentable {
     var samples: SampleBuffer
     var start: Int
     var length: Int
@@ -15,7 +14,7 @@ public struct Waveform : NSViewRepresentable {
         self.constants = constants
         self.start = start
         if length > 0 {
-            self.length = min(length, (samples.samples.count - start))
+            self.length = min(length, samples.samples.count - start)
         } else {
             self.length = samples.samples.count - start
         }
@@ -53,8 +52,7 @@ public struct Waveform : NSViewRepresentable {
     }
 }
 #else
-public struct Waveform : UIViewRepresentable {
-
+public struct Waveform: UIViewRepresentable {
     var samples: SampleBuffer
     var start: Int
     var length: Int
@@ -101,6 +99,5 @@ public struct Waveform : UIViewRepresentable {
                      length: length)
         uiView.setNeedsDisplay()
     }
-
 }
 #endif

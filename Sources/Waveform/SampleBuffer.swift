@@ -1,4 +1,3 @@
-
 import Foundation
 
 /// Immutable data for samples so we can quickly compare to see if we should recompute.

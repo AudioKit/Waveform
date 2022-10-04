@@ -5,13 +5,10 @@ import MetalKit
 let MaxBuffers = 3
 
 public struct Constants {
-    public init() {
-        
-    }
+    public init() {}
 }
 
 class Renderer: NSObject, MTKViewDelegate {
-
     var device: MTLDevice!
     var queue: MTLCommandQueue!
     var pipeline: MTLRenderPipelineState!
@@ -19,7 +16,7 @@ class Renderer: NSObject, MTKViewDelegate {
     public var constants = Constants()
 
     private let inflightSemaphore = DispatchSemaphore(value: MaxBuffers)
-    
+
     var minBuffers: [MTLBuffer] = []
     var maxBuffers: [MTLBuffer] = []
 
@@ -30,9 +27,9 @@ class Renderer: NSObject, MTKViewDelegate {
     init(device: MTLDevice) {
         self.device = device
         queue = device.makeCommandQueue()
-        
+
         let library = try! device.makeDefaultLibrary(bundle: Bundle.module)
-        
+
         let rpd = MTLRenderPipelineDescriptor()
         rpd.vertexFunction = library.makeFunction(name: "waveform_vert")
         rpd.fragmentFunction = library.makeFunction(name: "waveform_frag")
@@ -46,16 +43,13 @@ class Renderer: NSObject, MTKViewDelegate {
         colorAttachment.destinationAlphaBlendFactor = .oneMinusSourceAlpha
 
         pipeline = try! device.makeRenderPipelineState(descriptor: rpd)
-        
+
         super.init()
     }
 
-    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+    func mtkView(_: MTKView, drawableSizeWillChange _: CGSize) {}
 
-    }
-    
     func selectBuffers(width: CGFloat) -> (MTLBuffer, MTLBuffer) {
-        
         var level = 0
         for (minBuffer, maxBuffer) in zip(minBuffers, maxBuffers) {
             if CGFloat(minBuffer.length / MemoryLayout<Float>.size) < width {
@@ -63,20 +57,20 @@ class Renderer: NSObject, MTKViewDelegate {
             }
             level += 1
         }
-        
+
         return (minBuffers.last!, maxBuffers.last!)
     }
-    
+
     func encode(to commandBuffer: MTLCommandBuffer,
                 pass: MTLRenderPassDescriptor,
-                width: CGFloat) {
-        
+                width: CGFloat)
+    {
         pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 0)
 
         let highestResolutionCount = Float(lastSamples.samples.count)
         let startFactor = Float(start) / highestResolutionCount
         let lengthFactor = Float(length) / highestResolutionCount
-        
+
         let (minBuffer, maxBuffer) = selectBuffers(width: width / CGFloat(lengthFactor))
         let enc = commandBuffer.makeRenderCommandEncoder(descriptor: pass)!
         enc.setRenderPipelineState(pipeline)
@@ -93,11 +87,9 @@ class Renderer: NSObject, MTKViewDelegate {
         enc.setFragmentBytes(c, length: MemoryLayout<Constants>.size, index: 3)
         enc.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
         enc.endEncoding()
-        
     }
 
     func draw(in view: MTKView) {
-
         let size = view.frame.size
         let w = Float(size.width)
         let h = Float(size.height)
@@ -117,15 +109,12 @@ class Renderer: NSObject, MTKViewDelegate {
             semaphore.signal()
         }
 
-
         if let renderPassDescriptor = view.currentRenderPassDescriptor, let currentDrawable = view.currentDrawable {
-            
             encode(to: commandBuffer, pass: renderPassDescriptor, width: size.width)
 
             commandBuffer.present(currentDrawable)
         }
         commandBuffer.commit()
-
     }
 
     func set(samples: SampleBuffer, start: Int, length: Int) {
@@ -137,10 +126,10 @@ class Renderer: NSObject, MTKViewDelegate {
         lastSamples = samples
         minBuffers.removeAll()
         maxBuffers.removeAll()
-        
+
         var minSamples = samples.samples
         var maxSamples = samples.samples
-        
+
         var s = samples.samples.count
         while s > 2 {
             minBuffers.append(device.makeBuffer(minSamples)!)

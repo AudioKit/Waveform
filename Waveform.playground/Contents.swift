@@ -1,15 +1,14 @@
-import Waveform
 import PlaygroundSupport
 import SwiftUI
+import Waveform
 
 struct WaveformDemoView: View {
-
     var samples: [Float] {
         var s: [Float] = []
         let size = 1000
         for i in 0 ..< size {
             let sine = sin(Float(i * 2) * .pi / Float(size)) * 0.9
-            s.append(sine + 0.1 * Float.random(in: -1...1))
+            s.append(sine + 0.1 * Float.random(in: -1 ... 1))
         }
         return s
     }
@@ -22,7 +21,7 @@ struct WaveformDemoView: View {
         Waveform(samples: SampleBuffer(samples: samples),
                  start: 0,
                  length: 1000)
-        .padding()
+            .padding()
     }
 }
 
