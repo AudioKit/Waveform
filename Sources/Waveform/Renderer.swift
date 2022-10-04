@@ -7,9 +7,14 @@ import SwiftUI
 
 let MaxBuffers = 3
 
+/// Parameters defining the look and feel of the waveform
 public struct Constants {
+
+    /// Foreground color
     public var color: Color
 
+    /// Initialize the Constants structure
+    /// - Parameter color: Foreground color
     public init(color: Color = .white) {
         self.color = color
     }

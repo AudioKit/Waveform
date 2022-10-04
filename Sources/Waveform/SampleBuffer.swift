@@ -6,10 +6,12 @@ import Foundation
 public class SampleBuffer {
     let samples: [Float]
 
+    /// Initialize the buffer with samples
     public init(samples: [Float]) {
         self.samples = samples
     }
 
+    /// Number of samples
     public var count: Int {
         samples.count
     }

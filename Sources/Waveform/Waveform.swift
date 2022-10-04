@@ -5,12 +5,19 @@ import MetalKit
 import SwiftUI
 
 #if os(macOS)
+/// Waveform SwiftUI View
 public struct Waveform: NSViewRepresentable {
     var samples: SampleBuffer
     var start: Int
     var length: Int
     var constants: Constants
 
+    /// Initialize the waveform
+    /// - Parameters:
+    ///   - samples: All samples able to be displayed
+    ///   - start: Which sample on which to start displaying samples
+    ///   - length: The width of the entire waveform in samples
+    ///   - constants: Look and feel parameters for the waveform
     public init(samples: SampleBuffer, start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
         self.samples = samples
         self.constants = constants
@@ -22,6 +29,7 @@ public struct Waveform: NSViewRepresentable {
         }
     }
 
+    /// Class required by NSViewRepresentable
     public class Coordinator {
         var renderer: Renderer
 
@@ -30,10 +38,12 @@ public struct Waveform: NSViewRepresentable {
         }
     }
 
+    /// Required by NSViewRepresentable
     public func makeCoordinator() -> Coordinator {
         return Coordinator(constants: constants)
     }
 
+    /// Required by NSViewRepresentable
     public func makeNSView(context: Context) -> some NSView {
         let metalView = MTKView(frame: CGRect(x: 0, y: 0, width: 1024, height: 768),
                                 device: MTLCreateSystemDefaultDevice()!)
@@ -44,6 +54,7 @@ public struct Waveform: NSViewRepresentable {
         return metalView
     }
 
+    /// Required by NSViewRepresentable
     public func updateNSView(_ nsView: NSViewType, context: Context) {
         let renderer = context.coordinator.renderer
         renderer.constants = constants
@@ -54,12 +65,19 @@ public struct Waveform: NSViewRepresentable {
     }
 }
 #else
+/// Waveform SwiftUI View
 public struct Waveform: UIViewRepresentable {
     var samples: SampleBuffer
     var start: Int
     var length: Int
     var constants: Constants
 
+    /// Initialize the waveform
+    /// - Parameters:
+    ///   - samples: All samples able to be displayed
+    ///   - start: Which sample on which to start displaying samples
+    ///   - length: The width of the entire waveform in samples
+    ///   - constants: Look and feel parameters for the waveform
     public init(samples: SampleBuffer, start: Int = 0, length: Int = 0, constants: Constants = Constants()) {
         self.samples = samples
         self.constants = constants
@@ -71,6 +89,7 @@ public struct Waveform: UIViewRepresentable {
         }
     }
 
+    /// Required by UIViewRepresentable
     public class Coordinator {
         var renderer: Renderer
 
@@ -79,10 +98,12 @@ public struct Waveform: UIViewRepresentable {
         }
     }
 
+    /// Required by UIViewRepresentable
     public func makeCoordinator() -> Coordinator {
         return Coordinator(constants: constants)
     }
 
+    /// Required by UIViewRepresentable
     public func makeUIView(context: Context) -> some UIView {
         let metalView = MTKView(frame: CGRect(x: 0, y: 0, width: 1024, height: 768),
                                 device: MTLCreateSystemDefaultDevice()!)
@@ -93,6 +114,7 @@ public struct Waveform: UIViewRepresentable {
         return metalView
     }
 
+    /// Required by UIViewRepresentable
     public func updateUIView(_ uiView: UIViewType, context: Context) {
         let renderer = context.coordinator.renderer
         renderer.constants = constants
