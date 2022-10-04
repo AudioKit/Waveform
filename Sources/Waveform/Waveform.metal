@@ -7,7 +7,7 @@ kernel void waveform_bin(device const float* in,
                          constant uint& count,
                          uint tid [[ thread_position_in_grid]]) {
     
-    if(tid >= count) {
+    if (tid >= count) {
         return;
     }
     
@@ -53,8 +53,6 @@ float sample_waveform(device const float* min_waveform,
     auto s0 = smoothstep(min_value - falloff, min_value, uv.y);
     auto s1 = 1.0 - smoothstep(max_value, max_value + falloff, uv.y);
 
-    // return (uv.y > min_value && uv.y < max_value) ? 1.0 : 0.0;
-    
     return s0 * s1;
 }
 
