@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F130C47828EBF1390017B2AF /* MinimapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F130C47728EBF1390017B2AF /* MinimapView.swift */; };
 		F1A202B428DEA41E007CD919 /* WaveformDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A202B328DEA41E007CD919 /* WaveformDemoApp.swift */; };
 		F1A202B628DEA41E007CD919 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A202B528DEA41E007CD919 /* ContentView.swift */; };
 		F1A202B828DEA420007CD919 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1A202B728DEA420007CD919 /* Assets.xcassets */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F130C47728EBF1390017B2AF /* MinimapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimapView.swift; sourceTree = "<group>"; };
 		F1A202B028DEA41E007CD919 /* WaveformDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WaveformDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1A202B328DEA41E007CD919 /* WaveformDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformDemoApp.swift; sourceTree = "<group>"; };
 		F1A202B528DEA41E007CD919 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 				F1A202B328DEA41E007CD919 /* WaveformDemoApp.swift */,
 				F1FB409628E6660E00AFA732 /* beat.aiff */,
 				F1A202B528DEA41E007CD919 /* ContentView.swift */,
+				F130C47728EBF1390017B2AF /* MinimapView.swift */,
 				F1A202B728DEA420007CD919 /* Assets.xcassets */,
 				F1A202B928DEA420007CD919 /* WaveformDemo.entitlements */,
 				F1A202BA28DEA420007CD919 /* Preview Content */,
@@ -168,6 +171,7 @@
 			files = (
 				F1A202B628DEA41E007CD919 /* ContentView.swift in Sources */,
 				F1A202B428DEA41E007CD919 /* WaveformDemoApp.swift in Sources */,
+				F130C47828EBF1390017B2AF /* MinimapView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
