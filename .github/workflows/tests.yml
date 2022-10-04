@@ -25,3 +25,10 @@ jobs:
       - name: build 
         run: swift build
 
+# Send notification to Discord on failure.
+send_notification:
+  name: Send Notification
+  uses: AudioKit/ci/.github/workflows/send_notification.yml@main
+  needs: [build]
+  if: ${{ failure() && github.ref == 'refs/heads/main' }}
+  secrets: inherit
