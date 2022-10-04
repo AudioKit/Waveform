@@ -2,7 +2,7 @@
 
 GPU accelerated SwiftUI waveform view
 
-![waveform-demo](Sources/Waveform/Waveform/Resources/demo.png)
+![waveform-demo](Sources/Waveform/Waveform/Waveform.docc/Resources/demo.png)
 
 ## Documentation
 
