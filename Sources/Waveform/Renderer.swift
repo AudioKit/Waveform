@@ -144,7 +144,6 @@ class Renderer: NSObject, MTKViewDelegate {
         
         var s = samples.samples.count
         while s > 2 {
-            print("samples: \(s)")
             minBuffers.append(device.makeBuffer(minSamples)!)
             maxBuffers.append(device.makeBuffer(maxSamples)!)
 
