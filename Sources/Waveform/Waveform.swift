@@ -35,6 +35,7 @@ public struct Waveform: NSViewRepresentable {
 
         init(constants: Constants) {
             renderer = Renderer(device: MTLCreateSystemDefaultDevice()!)
+            renderer.constants = constants
         }
     }
 

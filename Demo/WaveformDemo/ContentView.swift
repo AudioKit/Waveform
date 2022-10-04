@@ -81,14 +81,15 @@ struct ContentView: View {
     var body: some View {
         VStack {
             ZStack(alignment: .leading) {
-                Waveform(samples: model.samples)
+                Waveform(samples: model.samples, constants: Constants(color: .cyan))
                 MinimapView(start: $start, length: $length)
             }
             .frame(height: 100)
             .padding()
             Waveform(samples: model.samples,
                      start: Int(start * Double(model.samples.count - 1)),
-                     length: Int(length * Double(model.samples.count)))
+                     length: Int(length * Double(model.samples.count)),
+                     constants: Constants(color: .blue))
         }
         .padding()
     }

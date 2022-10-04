@@ -36,7 +36,7 @@ vertex FragIn waveform_vert(uint id [[ vertex_id ]]) {
 }
 
 struct Constants {
-    
+    float4 color;
 };
 
 float sample_waveform(device const float* min_waveform,
@@ -65,7 +65,9 @@ fragment half4 waveform_frag(FragIn in   [[ stage_in ]],
                              constant Constants& constants) {
     
     half s = sample_waveform(min_waveform, max_waveform, count, in.uv);
-    
-    return {1,1,1,s};
+
+    half4 color = half4(constants.color);
+    color.a *= s;
+    return color;
 
 }
