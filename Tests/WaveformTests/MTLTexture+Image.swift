@@ -1,3 +1,5 @@
+// Copyright AudioKit. All Rights Reserved. Revision History at http://github.com/AudioKit/Waveform/
+
 import CoreGraphics
 import Foundation
 import Metal
