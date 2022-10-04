@@ -33,6 +33,6 @@ jobs:
   send_notification:
     name: Send Notification
     uses: AudioKit/ci/.github/workflows/send_notification.yml@main
-    needs: [swift_test, build_demo]
+    needs: [build_demo]
     if: ${{ failure() && github.ref == 'refs/heads/main' }}
     secrets: inherit
