@@ -59,7 +59,6 @@ class Renderer: NSObject, MTKViewDelegate {
         var level = 0
         for (minBuffer, maxBuffer) in zip(minBuffers, maxBuffers) {
             if CGFloat(minBuffer.length / MemoryLayout<Float>.size) < width {
-                print("selected level \(level)")
                 return (minBuffer, maxBuffer)
             }
             level += 1
