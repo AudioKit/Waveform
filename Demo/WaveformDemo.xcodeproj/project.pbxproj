@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		29D479382A13DBED0033DF90 /* Piano.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 29D479372A13DBEC0033DF90 /* Piano.mp3 */; };
 		F130C47828EBF1390017B2AF /* MinimapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F130C47728EBF1390017B2AF /* MinimapView.swift */; };
 		F1A202B428DEA41E007CD919 /* WaveformDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A202B328DEA41E007CD919 /* WaveformDemoApp.swift */; };
 		F1A202B628DEA41E007CD919 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A202B528DEA41E007CD919 /* ContentView.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		29D479372A13DBEC0033DF90 /* Piano.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = Piano.mp3; path = ../../Tests/WaveformTests/Piano.mp3; sourceTree = "<group>"; };
 		F130C47728EBF1390017B2AF /* MinimapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimapView.swift; sourceTree = "<group>"; };
 		F1A202B028DEA41E007CD919 /* WaveformDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WaveformDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1A202B328DEA41E007CD919 /* WaveformDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformDemoApp.swift; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 		F1A202B228DEA41E007CD919 /* WaveformDemo */ = {
 			isa = PBXGroup;
 			children = (
+				29D479372A13DBEC0033DF90 /* Piano.mp3 */,
 				F1A202B328DEA41E007CD919 /* WaveformDemoApp.swift */,
 				F1FB409628E6660E00AFA732 /* beat.aiff */,
 				F1A202B528DEA41E007CD919 /* ContentView.swift */,
@@ -158,6 +161,7 @@
 			files = (
 				F1FB409728E6660E00AFA732 /* beat.aiff in Resources */,
 				F1A202BC28DEA420007CD919 /* Preview Assets.xcassets in Resources */,
+				29D479382A13DBED0033DF90 /* Piano.mp3 in Resources */,
 				F1A202B828DEA420007CD919 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
