@@ -10,18 +10,54 @@ import UIKit
 import AppKit
 #endif
 
+/// Returns the minimums of chunks of binSize.
 func binMin(samples: [Float], binSize: Int) -> [Float] {
-    var out: [Float] = []
-    for bin in 0 ..< samples.count / binSize {
-        out.append(samples[(bin * binSize) ..< ((bin + 1) * binSize)].min()!)
+    var out: [Float] = .init(repeating: 0.0, count: samples.count / binSize)
+
+    // Note: we have to use a dumb while loop to avoid swift's Range and have
+    //       decent perf in debug.
+    var bin = 0
+    while bin < out.count {
+
+        // Note: we could do the following but it's too slow in debug
+        // out[bin] = samples[(bin * binSize) ..< ((bin + 1) * binSize)].min()!
+
+        var v = Float.greatestFiniteMagnitude
+        let start: Int = bin * binSize
+        let end: Int = (bin + 1) * binSize
+        var i = start
+        while i < end {
+            v = min(samples[i], v)
+            i += 1
+        }
+        out[bin] = v
+        bin += 1
     }
     return out
 }
 
+/// Returns the maximums of chunks of binSize.
 func binMax(samples: [Float], binSize: Int) -> [Float] {
-    var out: [Float] = []
-    for bin in 0 ..< samples.count / binSize {
-        out.append(samples[(bin * binSize) ..< ((bin + 1) * binSize)].max()!)
+    var out: [Float] = .init(repeating: 0.0, count: samples.count / binSize)
+
+    // Note: we have to use a dumb while loop to avoid swift's Range and have
+    //       decent perf in debug.
+    var bin = 0
+    while bin < out.count {
+
+        // Note: we could do the following but it's too slow in debug
+        // out[bin] = samples[(bin * binSize) ..< ((bin + 1) * binSize)].max()!
+
+        var v = -Float.greatestFiniteMagnitude
+        let start: Int = bin * binSize
+        let end: Int = (bin + 1) * binSize
+        var i = start
+        while i < end {
+            v = max(samples[i], v)
+            i += 1
+        }
+        out[bin] = v
+        bin += 1
     }
     return out
 }
