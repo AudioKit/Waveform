@@ -32,7 +32,7 @@ class Renderer: NSObject, MTKViewDelegate {
     var minBuffers: [MTLBuffer] = []
     var maxBuffers: [MTLBuffer] = []
 
-    var lastSamples = SampleBuffer(samples: [])
+    var samples = SampleBuffer(samples: [0])
     var start = 0
     var length = 0
 
@@ -55,6 +55,9 @@ class Renderer: NSObject, MTKViewDelegate {
         colorAttachment.destinationAlphaBlendFactor = .oneMinusSourceAlpha
 
         pipeline = try! device.makeRenderPipelineState(descriptor: rpd)
+
+        minBuffers = [device.makeBuffer([0])!]
+        maxBuffers = [device.makeBuffer([0])!]
 
         super.init()
     }
@@ -79,7 +82,7 @@ class Renderer: NSObject, MTKViewDelegate {
     {
         pass.colorAttachments[0].clearColor = MTLClearColorMake(0, 0, 0, 0)
 
-        let highestResolutionCount = Float(lastSamples.samples.count)
+        let highestResolutionCount = Float(samples.samples.count)
         let startFactor = Float(start) / highestResolutionCount
         let lengthFactor = Float(length) / highestResolutionCount
 
@@ -129,27 +132,34 @@ class Renderer: NSObject, MTKViewDelegate {
         commandBuffer.commit()
     }
 
-    func set(samples: SampleBuffer, start: Int, length: Int) {
+    func set(samples: SampleBuffer, start: Int, length: Int) async {
         self.start = start
         self.length = length
-        if samples === lastSamples {
+        if samples === self.samples {
             return
         }
-        lastSamples = samples
-        minBuffers.removeAll()
-        maxBuffers.removeAll()
+        self.samples = samples
 
-        var minSamples = samples.samples
-        var maxSamples = samples.samples
-
-        var s = samples.samples.count
-        while s > 2 {
-            minBuffers.append(device.makeBuffer(minSamples)!)
-            maxBuffers.append(device.makeBuffer(maxSamples)!)
-
-            minSamples = binMin(samples: minSamples, binSize: 2)
-            maxSamples = binMax(samples: maxSamples, binSize: 2)
-            s /= 2
-        }
+        let buffers = makeBuffers(device: device, samples: samples)
+        self.minBuffers = buffers.0
+        self.maxBuffers = buffers.1
     }
+}
+
+func makeBuffers(device: MTLDevice, samples: SampleBuffer) -> ([MTLBuffer], [MTLBuffer]) {
+    var minSamples = samples.samples
+    var maxSamples = samples.samples
+
+    var s = samples.samples.count
+    var minBuffers: [MTLBuffer] = []
+    var maxBuffers: [MTLBuffer] = []
+    while s > 2 {
+        minBuffers.append(device.makeBuffer(minSamples)!)
+        maxBuffers.append(device.makeBuffer(maxSamples)!)
+
+        minSamples = binMin(samples: minSamples, binSize: 2)
+        maxSamples = binMax(samples: maxSamples, binSize: 2)
+        s /= 2
+    }
+    return (minBuffers, maxBuffers)
 }

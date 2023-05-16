@@ -51,11 +51,11 @@ final class WaveformTests: XCTestCase {
         writeCGImage(image: texture.cgImage, url: tmpURL as CFURL)
     }
 
-    func render(samples: [Float]) {
+    func render(samples: [Float]) async {
         guard let device = device else { return }
         let renderer = Renderer(device: device)
 
-        renderer.set(samples: SampleBuffer(samples: samples), start: 0, length: samples.count)
+        await renderer.set(samples: SampleBuffer(samples: samples), start: 0, length: samples.count)
 
         let commandBuffer = queue.makeCommandBuffer()!
         renderer.encode(to: commandBuffer, pass: pass, width: 512)
@@ -74,7 +74,7 @@ final class WaveformTests: XCTestCase {
         showTexture(texture: texture, name: "Waveform.png")
     }
 
-    func testRenderBeat() throws {
+    func testRenderBeat() async throws {
         guard let url = Bundle.module.url(forResource: "beat", withExtension: "aiff") else {
             XCTFail()
             return
@@ -84,6 +84,6 @@ final class WaveformTests: XCTestCase {
 
         let stereo = file.toFloatChannelData()!
 
-        render(samples: stereo[0])
+        await render(samples: stereo[0])
     }
 }

@@ -3,7 +3,7 @@
 import Foundation
 
 /// Immutable data for samples so we can quickly compare to see if we should recompute.
-public class SampleBuffer {
+public final class SampleBuffer: Sendable {
     let samples: [Float]
 
     /// Initialize the buffer with samples

@@ -59,9 +59,12 @@ public struct Waveform: NSViewRepresentable {
     public func updateNSView(_ nsView: NSViewType, context: Context) {
         let renderer = context.coordinator.renderer
         renderer.constants = constants
-        renderer.set(samples: samples,
-                     start: start,
-                     length: length)
+        Task {
+            await renderer.set(samples: samples,
+                               start: start,
+                               length: length)
+            nsView.setNeedsDisplay(nsView.bounds)
+        }
         nsView.setNeedsDisplay(nsView.bounds)
     }
 }
@@ -118,9 +121,12 @@ public struct Waveform: UIViewRepresentable {
     public func updateUIView(_ uiView: UIViewType, context: Context) {
         let renderer = context.coordinator.renderer
         renderer.constants = constants
-        renderer.set(samples: samples,
-                     start: start,
-                     length: length)
+        Task {
+            await renderer.set(samples: samples,
+                               start: start,
+                               length: length)
+            uiView.setNeedsDisplay()
+        }
         uiView.setNeedsDisplay()
     }
 }
