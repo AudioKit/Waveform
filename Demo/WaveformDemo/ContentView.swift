@@ -14,7 +14,7 @@ class WaveformDemoModel: ObservableObject {
 }
 
 func getFile() -> AVAudioFile {
-    let url = Bundle.main.url(forResource: "beat", withExtension: "aiff")!
+    let url = Bundle.main.url(forResource: "Piano", withExtension: "mp3")!
     return try! AVAudioFile(forReading: url)
 }
 
