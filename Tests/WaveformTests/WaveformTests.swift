@@ -82,7 +82,7 @@ final class WaveformTests: XCTestCase {
 
         let file = try! AVAudioFile(forReading: url)
 
-        let stereo = file.toFloatChannelData()!
+        let stereo = file.floatChannelData()!
 
         await render(samples: stereo[0])
     }

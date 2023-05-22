@@ -8,7 +8,7 @@ class WaveformDemoModel: ObservableObject {
     var samples: SampleBuffer
 
     init(file: AVAudioFile) {
-        let stereo = file.toFloatChannelData()!
+        let stereo = file.floatChannelData()!
         samples = SampleBuffer(samples: stereo[0])
     }
 }
