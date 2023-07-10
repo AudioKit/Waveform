@@ -64,7 +64,7 @@ class Renderer: NSObject, MTKViewDelegate {
 
     func mtkView(_: MTKView, drawableSizeWillChange _: CGSize) {}
 
-    func selectBuffers(width: CGFloat) -> (MTLBuffer, MTLBuffer) {
+    func selectBuffers(width: CGFloat) -> (MTLBuffer?, MTLBuffer?) {
         var level = 0
         for (minBuffer, maxBuffer) in zip(minBuffers, maxBuffers) {
             if CGFloat(minBuffer.length / MemoryLayout<Float>.size) < width {
@@ -73,9 +73,15 @@ class Renderer: NSObject, MTKViewDelegate {
             level += 1
         }
 
-        return (minBuffers.last!, maxBuffers.last!)
+        // Use optional binding to safely access last element of each array
+        if let minBufferLast = minBuffers.last, let maxBufferLast = maxBuffers.last {
+            return (minBufferLast, maxBufferLast)
+        } else {
+            // If either array is empty, return nil
+            return (nil, nil)
+        }
     }
-
+    
     func encode(to commandBuffer: MTLCommandBuffer,
                 pass: MTLRenderPassDescriptor,
                 width: CGFloat)
@@ -86,7 +92,12 @@ class Renderer: NSObject, MTKViewDelegate {
         let startFactor = Float(start) / highestResolutionCount
         let lengthFactor = Float(length) / highestResolutionCount
 
-        let (minBuffer, maxBuffer) = selectBuffers(width: width / CGFloat(lengthFactor))
+        let (minBufferOpt, maxBufferOpt) = selectBuffers(width: width / CGFloat(lengthFactor))
+        guard let minBuffer = minBufferOpt, let maxBuffer = maxBufferOpt else {
+            //early return to gracefully fail.
+            return
+        }
+
         let enc = commandBuffer.makeRenderCommandEncoder(descriptor: pass)!
         enc.setRenderPipelineState(pipeline)
 
