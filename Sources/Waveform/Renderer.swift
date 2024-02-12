@@ -36,6 +36,8 @@ class Renderer: NSObject, MTKViewDelegate {
     var start = 0
     var length = 0
 
+    let layerRenderPassDescriptor: MTLRenderPassDescriptor
+
     init(device: MTLDevice) {
         self.device = device
         queue = device.makeCommandQueue()
@@ -58,6 +60,11 @@ class Renderer: NSObject, MTKViewDelegate {
 
         minBuffers = [device.makeBuffer([0])!]
         maxBuffers = [device.makeBuffer([0])!]
+
+        layerRenderPassDescriptor = MTLRenderPassDescriptor()
+        layerRenderPassDescriptor.colorAttachments[0].loadAction = .clear
+        layerRenderPassDescriptor.colorAttachments[0].storeAction = .store
+        layerRenderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(1, 1, 1, 1);
 
         super.init()
     }
@@ -137,6 +144,38 @@ class Renderer: NSObject, MTKViewDelegate {
 
         if let renderPassDescriptor = view.currentRenderPassDescriptor, let currentDrawable = view.currentDrawable {
             encode(to: commandBuffer, pass: renderPassDescriptor, width: size.width)
+
+            commandBuffer.present(currentDrawable)
+        }
+        commandBuffer.commit()
+    }
+
+    func draw(to layer: CAMetalLayer) {
+
+        let size = layer.frame.size
+        let w = Float(size.width)
+        let h = Float(size.height)
+        // let scale = Float(view.contentScaleFactor)
+
+        if w == 0 || h == 0 {
+            return
+        }
+
+        // use semaphore to encode 3 frames ahead
+        _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
+
+        let commandBuffer = queue.makeCommandBuffer()!
+
+        let semaphore = inflightSemaphore
+        commandBuffer.addCompletedHandler { _ in
+            semaphore.signal()
+        }
+
+        if let currentDrawable = layer.nextDrawable() {
+
+            layerRenderPassDescriptor.colorAttachments[0].texture = currentDrawable.texture
+
+            encode(to: commandBuffer, pass: layerRenderPassDescriptor, width: size.width)
 
             commandBuffer.present(currentDrawable)
         }
