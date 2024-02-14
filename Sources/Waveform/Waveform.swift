@@ -108,12 +108,10 @@ public struct Waveform: UIViewRepresentable {
 
     /// Required by UIViewRepresentable
     public func makeUIView(context: Context) -> some UIView {
-        let metalView = MTKView(frame: CGRect(x: 0, y: 0, width: 1024, height: 768),
-                                device: MTLCreateSystemDefaultDevice()!)
-        metalView.enableSetNeedsDisplay = true
-        metalView.isPaused = true
-        metalView.delegate = context.coordinator.renderer
-        metalView.layer.isOpaque = false
+        let metalView = MetalView(frame: CGRect(x: 0, y: 0, width: 1024, height: 768))
+        metalView.renderer = context.coordinator.renderer
+        metalView.metalLayer.pixelFormat = .bgra8Unorm
+        metalView.metalLayer.isOpaque = false
         return metalView
     }
 

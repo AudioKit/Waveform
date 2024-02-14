@@ -152,7 +152,7 @@ class Renderer: NSObject, MTKViewDelegate {
 
     func draw(to layer: CAMetalLayer) {
 
-        let size = layer.frame.size
+        let size = layer.drawableSize
         let w = Float(size.width)
         let h = Float(size.height)
         // let scale = Float(view.contentScaleFactor)
