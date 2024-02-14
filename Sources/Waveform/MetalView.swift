@@ -3,7 +3,7 @@
 import Foundation
 import UIKit
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 class MetalView: UIView {
 
     var renderer: Renderer?

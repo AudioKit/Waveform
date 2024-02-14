@@ -166,6 +166,7 @@ class Renderer: NSObject {
     }
 }
 
+#if !os(visionOS)
 extension Renderer: MTKViewDelegate {
 
     func mtkView(_: MTKView, drawableSizeWillChange _: CGSize) {}
@@ -198,6 +199,7 @@ extension Renderer: MTKViewDelegate {
         commandBuffer.commit()
     }
 }
+#endif
 
 func makeBuffers(device: MTLDevice, samples: SampleBuffer) -> ([MTLBuffer], [MTLBuffer]) {
     var minSamples = samples.samples
