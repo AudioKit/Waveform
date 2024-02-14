@@ -20,7 +20,7 @@ struct Constants {
     }
 }
 
-class Renderer: NSObject, MTKViewDelegate {
+class Renderer: NSObject {
     var device: MTLDevice!
     var queue: MTLCommandQueue!
     var pipeline: MTLRenderPipelineState!
@@ -68,8 +68,6 @@ class Renderer: NSObject, MTKViewDelegate {
 
         super.init()
     }
-
-    func mtkView(_: MTKView, drawableSizeWillChange _: CGSize) {}
 
     func selectBuffers(width: CGFloat) -> (MTLBuffer?, MTLBuffer?) {
         var level = 0
@@ -122,34 +120,6 @@ class Renderer: NSObject, MTKViewDelegate {
         enc.endEncoding()
     }
 
-    func draw(in view: MTKView) {
-        let size = view.frame.size
-        let w = Float(size.width)
-        let h = Float(size.height)
-        // let scale = Float(view.contentScaleFactor)
-
-        if w == 0 || h == 0 {
-            return
-        }
-
-        // use semaphore to encode 3 frames ahead
-        _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
-
-        let commandBuffer = queue.makeCommandBuffer()!
-
-        let semaphore = inflightSemaphore
-        commandBuffer.addCompletedHandler { _ in
-            semaphore.signal()
-        }
-
-        if let renderPassDescriptor = view.currentRenderPassDescriptor, let currentDrawable = view.currentDrawable {
-            encode(to: commandBuffer, pass: renderPassDescriptor, width: size.width)
-
-            commandBuffer.present(currentDrawable)
-        }
-        commandBuffer.commit()
-    }
-
     func draw(to layer: CAMetalLayer) {
 
         let size = layer.drawableSize
@@ -193,6 +163,39 @@ class Renderer: NSObject, MTKViewDelegate {
         let buffers = makeBuffers(device: device, samples: samples)
         self.minBuffers = buffers.0
         self.maxBuffers = buffers.1
+    }
+}
+
+extension Renderer: MTKViewDelegate {
+
+    func mtkView(_: MTKView, drawableSizeWillChange _: CGSize) {}
+
+    func draw(in view: MTKView) {
+        let size = view.frame.size
+        let w = Float(size.width)
+        let h = Float(size.height)
+        // let scale = Float(view.contentScaleFactor)
+
+        if w == 0 || h == 0 {
+            return
+        }
+
+        // use semaphore to encode 3 frames ahead
+        _ = inflightSemaphore.wait(timeout: DispatchTime.distantFuture)
+
+        let commandBuffer = queue.makeCommandBuffer()!
+
+        let semaphore = inflightSemaphore
+        commandBuffer.addCompletedHandler { _ in
+            semaphore.signal()
+        }
+
+        if let renderPassDescriptor = view.currentRenderPassDescriptor, let currentDrawable = view.currentDrawable {
+            encode(to: commandBuffer, pass: renderPassDescriptor, width: size.width)
+
+            commandBuffer.present(currentDrawable)
+        }
+        commandBuffer.commit()
     }
 }
 
