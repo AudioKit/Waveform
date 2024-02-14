@@ -34,11 +34,10 @@ class MetalView: UIView {
     }
 
     func resizeDrawable() {
-        let scaleFactor = self.window?.screen.nativeScale ?? 1
 
         var newSize = bounds.size
-        newSize.width *= scaleFactor
-        newSize.height *= scaleFactor
+        newSize.width *= contentScaleFactor
+        newSize.height *= contentScaleFactor
 
         if newSize.width <= 0 || newSize.height <= 0 {
             return
