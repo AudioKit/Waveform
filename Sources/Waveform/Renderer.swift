@@ -148,6 +148,8 @@ class Renderer: NSObject {
             encode(to: commandBuffer, pass: layerRenderPassDescriptor, width: size.width)
 
             commandBuffer.present(currentDrawable)
+        } else {
+            print("⚠️ couldn't get drawable")
         }
         commandBuffer.commit()
     }
