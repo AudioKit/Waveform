@@ -1,9 +1,7 @@
 // Copyright AudioKit. All Rights Reserved. Revision History at http://github.com/AudioKit/Waveform/
 
-import Foundation
-import UIKit
-
 #if os(iOS) || os(visionOS)
+import UIKit
 class MetalView: UIView {
 
     var renderer: Renderer?
