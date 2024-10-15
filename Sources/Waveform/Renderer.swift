@@ -143,7 +143,7 @@ class Renderer: NSObject, MTKViewDelegate {
         commandBuffer.commit()
     }
 
-    func set(samples: SampleBuffer, start: Int, length: Int) async {
+    func set(samples: SampleBuffer, start: Int, length: Int) {
         self.start = start
         self.length = length
         if samples === self.samples {
